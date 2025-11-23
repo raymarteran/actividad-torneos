@@ -53,7 +53,7 @@ function Resultados() {
         selectedTorneo,
         selectedCategoria
       );
-      setResultados(response.data || []);
+      setResultados(response.data?.resultados || []);
     } catch (error) {
       console.error('Error cargando resultados:', error);
     }
@@ -68,6 +68,15 @@ function Resultados() {
       console.error('Error generando clasificación:', error);
       alert('Error al generar la clasificación');
     }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   if (loading) {
@@ -97,8 +106,8 @@ function Resultados() {
             >
               <option value="">Seleccione un torneo</option>
               {torneos.map((torneo) => (
-                <option key={torneo.id} value={torneo.id}>
-                  {torneo.nombre} - {torneo.fecha}
+                <option key={torneo._id} value={torneo._id}>
+                  {torneo.nombre} - {formatDate(torneo.fecha)}
                 </option>
               ))}
             </select>
@@ -118,7 +127,7 @@ function Resultados() {
               >
                 <option value="">Seleccione una categoría</option>
                 {categorias.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option key={cat._id} value={cat._id}>
                     {cat.nombre}
                   </option>
                 ))}
@@ -159,33 +168,39 @@ function Resultados() {
                     </td>
                   </tr>
                 ) : (
-                  resultados.map((resultado, index) => (
-                    <tr
-                      key={resultado.id}
-                      className={`hover:bg-gray-50 ${
-                        index < 3 ? 'bg-yellow-50' : ''
-                      }`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap font-bold">
-                        {index + 1}
-                        {index === 0 && ' 🥇'}
-                        {index === 1 && ' 🥈'}
-                        {index === 2 && ' 🥉'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {resultado.atleta?.nombre} {resultado.atleta?.apellido}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap font-mono">
-                        {resultado.tiempo || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {resultado.evento || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {resultado.puntos || '-'}
-                      </td>
-                    </tr>
-                  ))
+                  resultados.map((resultado, index) => {
+                    // Obtener el evento del mejor tiempo
+                    const mejorTiempoData = resultado.tiempos?.find(t => t.tiempo === resultado.mejorTiempo);
+                    const eventoNombre = mejorTiempoData?.evento || resultado.tiempos?.[0]?.evento || '-';
+                    
+                    return (
+                      <tr
+                        key={resultado.atleta?._id || index}
+                        className={`hover:bg-gray-50 ${
+                          index < 3 ? 'bg-yellow-50' : ''
+                        }`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap font-bold">
+                          {resultado.posicion || index + 1}
+                          {index === 0 && ' 🥇'}
+                          {index === 1 && ' 🥈'}
+                          {index === 2 && ' 🥉'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {resultado.atleta?.nombre} {resultado.atleta?.apellido}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap font-mono">
+                          {resultado.mejorTiempo || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {eventoNombre}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {resultado.puntosTotales || 0}
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

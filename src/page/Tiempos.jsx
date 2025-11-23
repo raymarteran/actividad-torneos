@@ -34,6 +34,12 @@ function Tiempos() {
 
   useEffect(() => {
     if (formData.categoriaId) {
+      fetchTiempos();
+    }
+  }, [formData.categoriaId]);
+
+  useEffect(() => {
+    if (formData.categoriaId) {
       fetchInscripciones();
     }
   }, [formData.categoriaId]);
@@ -73,6 +79,7 @@ function Tiempos() {
     if (!formData.categoriaId) return;
     try {
       const response = await tiempoService.getByCategoria(selectedTorneo, formData.categoriaId);
+      console.log("tiempos", response.data);
       setTiempos(response.data || []);
     } catch (error) {
       console.error('Error cargando tiempos:', error);
@@ -96,13 +103,22 @@ function Tiempos() {
         evento: '',
         observaciones: '',
       });
+      setSelectedTorneo(null);
       fetchTiempos();
     } catch (error) {
       console.error('Error registrando tiempo:', error);
       alert('Error al registrar el tiempo');
     }
   };
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+  
   const formatTiempo = (tiempo) => {
     if (!tiempo) return '-';
     return tiempo;
@@ -132,8 +148,8 @@ function Tiempos() {
         >
           <option value="">Seleccione un torneo</option>
           {torneos.map((torneo) => (
-            <option key={torneo.id} value={torneo.id}>
-              {torneo.nombre} - {torneo.fecha}
+            <option key={torneo._id} value={torneo._id}>
+              {torneo.nombre} - {formatDate(torneo.fecha)}
             </option>
           ))}
         </select>
@@ -168,7 +184,7 @@ function Tiempos() {
                   >
                     <option value="">Seleccione una categoría</option>
                     {categorias.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
+                      <option key={cat._id} value={cat._id}>
                         {cat.nombre}
                       </option>
                     ))}
@@ -187,8 +203,8 @@ function Tiempos() {
                   >
                     <option value="">Seleccione un atleta</option>
                     {inscripciones.map((inscripcion) => (
-                      <option key={inscripcion.id} value={inscripcion.atletaId}>
-                        {inscripcion.atleta?.nombre} {inscripcion.atleta?.apellido}
+                      <option key={inscripcion._id} value={inscripcion.atleta_id?._id || inscripcion.atleta_id}>
+                        {inscripcion.atleta_id?.nombre} {inscripcion.atleta_id?.apellido}
                       </option>
                     ))}
                   </select>
@@ -260,12 +276,12 @@ function Tiempos() {
                     </tr>
                   ) : (
                     tiempos.map((tiempo) => (
-                      <tr key={tiempo.id} className="hover:bg-gray-50">
+                      <tr key={tiempo._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {tiempo.atleta?.nombre} {tiempo.atleta?.apellido}
+                          {tiempo.atleta_id?.nombre} {tiempo.atleta_id?.apellido}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {tiempo.evento || '-'}
+                          {tiempo.evento_id?.nombre || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap font-mono">
                           {formatTiempo(tiempo.tiempo)}

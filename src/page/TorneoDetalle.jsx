@@ -114,12 +114,12 @@ function TorneoDetalle() {
                   <h2 className="text-xl font-semibold text-primary">Categorías</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {torneo.categorias.map((categoria, index) => (
+                  {torneo.categorias.map((categoria) => (
                     <span
-                      key={index}
+                      key={categoria._id}
                       className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium"
                     >
-                      {categoria}
+                      {categoria.nombre}
                     </span>
                   ))}
                 </div>
@@ -134,13 +134,13 @@ function TorneoDetalle() {
                   <h2 className="text-xl font-semibold text-primary">Eventos</h2>
                 </div>
                 <ul className="space-y-2">
-                  {torneo.eventos.map((evento, index) => (
+                  {torneo.eventos.map((evento) => (
                     <li
-                      key={index}
+                      key={evento._id}
                       className="flex items-center gap-2 text-gray-700"
                     >
                       <span className="w-2 h-2 bg-primary rounded-full"></span>
-                      <span>{evento}</span>
+                      <span>{evento.nombre}</span>
                     </li>
                   ))}
                 </ul>
@@ -152,8 +152,8 @@ function TorneoDetalle() {
           <div className="mt-8 pt-6 border-t border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600 mb-1">ID del Torneo</p>
-                <p className="text-lg font-semibold text-primary">#{torneo.id}</p>
+                <p className="text-sm text-gray-600 mb-1">Nombre del Torneo</p>
+                <p className="text-lg font-semibold text-primary">{torneo.nombre}</p>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Fecha</p>

@@ -1,0 +1,1320 @@
+================================================================================
+                    DOCUMENTACIÓN SCRUM - SISTEMA DE GESTIÓN DE TORNEOS
+                    Metodología Ágil - Desarrollo Web Profesional
+================================================================================
+
+INFORMACIÓN DEL PROYECTO
+================================================================================
+
+Nombre del Proyecto: Sistema de Gestión de Torneos Deportivos
+Versión: 1.0.0
+Tipo: Aplicación Web Full-Stack (Frontend SPA + Backend REST API)
+Autor: Raymar Teran
+CI: 25604593
+Institución: Universidad Valle del Momboy
+Materia: Frontend 2
+Carrera: Ingeniería de Computación
+Fecha de Documentación: 2024
+
+ARQUITECTURA DEL PROYECTO
+================================================================================
+El proyecto está dividido en dos partes principales:
+
+1. FRONTEND (Carpeta raíz)
+   - React 19.2.0 con Vite
+   - Single Page Application (SPA)
+   - Tailwind CSS para estilos
+   - React Router para navegación
+
+2. BACKEND (Carpeta server/)
+   - Node.js con Express.js
+   - MongoDB con Mongoose
+   - REST API
+   - Autenticación JWT
+   - Puerto: 5000
+
+================================================================================
+1. VISIÓN DEL PRODUCTO
+================================================================================
+
+1.1. DESCRIPCIÓN GENERAL
+-------------------------
+El Sistema de Gestión de Torneos Deportivos es una aplicación web moderna diseñada
+para facilitar la administración integral de competencias deportivas, específicamente
+orientada a torneos de natación, triatlón y disciplinas acuáticas relacionadas.
+
+1.2. PROPÓSITO
+--------------
+Proporcionar una plataforma digital completa que permita a organizadores, jueces y
+administradores gestionar de manera eficiente todos los aspectos de un torneo
+deportivo, desde la creación del evento hasta la generación de resultados finales.
+
+1.3. VALOR PARA EL USUARIO
+---------------------------
+- Reducción del tiempo de gestión administrativa en un 70%
+- Eliminación de errores manuales en el registro de tiempos y resultados
+- Acceso en tiempo real a información de torneos, atletas e inscripciones
+- Generación automática de clasificaciones y resultados
+- Interfaz intuitiva y moderna que mejora la experiencia del usuario
+
+1.4. OBJETIVOS DE NEGOCIO
+--------------------------
+- Digitalizar completamente el proceso de gestión de torneos
+- Mejorar la precisión en el registro de tiempos y resultados
+- Facilitar la inscripción de atletas y organización de categorías
+- Proporcionar reportes y estadísticas en tiempo real
+- Escalar el sistema para soportar múltiples torneos simultáneos
+
+1.5. STAKEHOLDERS PRINCIPALES
+------------------------------
+- Organizadores de torneos deportivos
+- Jueces y oficiales de competencia
+- Atletas participantes
+- Clubes y equipos deportivos
+- Federaciones deportivas
+
+================================================================================
+2. ROLES Y RESPONSABILIDADES SCRUM
+================================================================================
+
+2.1. PRODUCT OWNER (PO)
+------------------------
+Responsabilidades:
+- Definir y priorizar el Product Backlog
+- Asegurar que el equipo entienda los requerimientos
+- Validar que las funcionalidades entregadas cumplan con las expectativas
+- Tomar decisiones sobre el alcance y características del producto
+- Comunicar la visión del producto al equipo
+
+En este proyecto: El Product Owner es el desarrollador principal (Raymar Teran)
+quien define las funcionalidades basándose en los requerimientos académicos y
+las necesidades del dominio de gestión de torneos.
+
+2.2. SCRUM MASTER (SM)
+----------------------
+Responsabilidades:
+- Facilitar los eventos Scrum (Sprint Planning, Daily Standup, Sprint Review, Retrospectiva)
+- Eliminar impedimentos que bloqueen al equipo
+- Asegurar que el equipo siga los principios y prácticas de Scrum
+- Proteger al equipo de interrupciones externas
+- Promover la mejora continua
+
+En este proyecto: El Scrum Master puede ser el mismo desarrollador o un mentor
+académico que guíe el proceso.
+
+2.3. EQUIPO DE DESARROLLO (DEVELOPMENT TEAM)
+---------------------------------------------
+Responsabilidades:
+- Diseñar, desarrollar y probar las funcionalidades del producto
+- Estimar el esfuerzo de las historias de usuario
+- Comprometerse con el trabajo del Sprint
+- Colaborar para entregar incrementos de producto funcionales
+- Participar activamente en las ceremonias Scrum
+
+En este proyecto: Equipo de desarrollo frontend especializado en React y tecnologías
+web modernas.
+
+2.4. STAKEHOLDERS
+-----------------
+- Usuarios finales (organizadores, jueces, atletas)
+- Profesores y evaluadores académicos
+- Posibles clientes o instituciones deportivas
+
+================================================================================
+3. PRODUCT BACKLOG
+================================================================================
+
+El Product Backlog es una lista priorizada de todas las funcionalidades, mejoras
+y correcciones que el producto necesita. Está organizado por épicas y user stories.
+
+3.1. ÉPICA 1: AUTENTICACIÓN Y AUTORIZACIÓN
+-------------------------------------------
+Prioridad: CRÍTICA
+Valor de Negocio: ALTO
+Esfuerzo: MEDIO
+
+User Stories:
+- US-001: Como usuario, quiero iniciar sesión con email y contraseña para acceder al sistema
+- US-002: Como usuario, quiero que mi sesión se mantenga activa para no tener que iniciar sesión repetidamente
+- US-003: Como administrador, quiero que las rutas estén protegidas para garantizar la seguridad
+- US-004: Como usuario, quiero cerrar sesión para proteger mi cuenta
+
+3.2. ÉPICA 2: GESTIÓN DE TORNEOS
+---------------------------------
+Prioridad: CRÍTICA
+Valor de Negocio: ALTO
+Esfuerzo: ALTO
+
+User Stories:
+- US-005: Como organizador, quiero crear un nuevo torneo con información básica (nombre, deporte, fecha, ubicación)
+- US-006: Como organizador, quiero ver una lista de todos los torneos para tener una visión general
+- US-007: Como organizador, quiero ver los detalles de un torneo específico para gestionarlo
+- US-008: Como organizador, quiero editar la información de un torneo para actualizar datos
+- US-009: Como organizador, quiero eliminar un torneo para mantener la base de datos limpia
+- US-010: Como organizador, quiero cambiar el estado de un torneo (planificado, en_curso, finalizado, cancelado)
+- US-011: Como organizador, quiero agregar categorías a un torneo (Sub-18, Libre, Máster, etc.)
+- US-012: Como organizador, quiero agregar eventos a un torneo (100m libre, 200m mariposa, etc.)
+
+3.3. ÉPICA 3: GESTIÓN DE ATLETAS
+---------------------------------
+Prioridad: ALTA
+Valor de Negocio: ALTO
+Esfuerzo: MEDIO
+
+User Stories:
+- US-013: Como organizador, quiero registrar un nuevo atleta con información personal completa
+- US-014: Como organizador, quiero ver una lista de todos los atletas registrados
+- US-015: Como organizador, quiero buscar atletas por nombre, apellido o email para encontrarlos rápidamente
+- US-016: Como organizador, quiero editar la información de un atleta para mantener datos actualizados
+- US-017: Como organizador, quiero ver el historial de un atleta (inscripciones, tiempos, resultados)
+
+3.4. ÉPICA 4: GESTIÓN DE INSCRIPCIONES
+---------------------------------------
+Prioridad: ALTA
+Valor de Negocio: ALTO
+Esfuerzo: ALTO
+
+User Stories:
+- US-018: Como organizador, quiero inscribir un atleta en una categoría de un torneo
+- US-019: Como organizador, quiero asignar un número de competidor único a cada inscripción
+- US-020: Como organizador, quiero ver todas las inscripciones de un torneo
+- US-021: Como organizador, quiero filtrar inscripciones por categoría para organizar mejor
+- US-022: Como organizador, quiero validar que un atleta cumpla con los requisitos de edad y género de la categoría
+- US-023: Como organizador, quiero cambiar el estado de una inscripción (pendiente, confirmada, cancelada)
+- US-024: Como organizador, quiero agregar observaciones a una inscripción
+
+3.5. ÉPICA 5: REGISTRO DE TIEMPOS
+----------------------------------
+Prioridad: CRÍTICA
+Valor de Negocio: ALTO
+Esfuerzo: ALTO
+
+User Stories:
+- US-025: Como juez, quiero registrar el tiempo de un atleta en un evento específico
+- US-026: Como juez, quiero que el sistema calcule automáticamente la posición del atleta
+- US-027: Como juez, quiero que el sistema asigne puntos según la posición obtenida
+- US-028: Como juez, quiero ver todos los tiempos registrados de un evento
+- US-029: Como juez, quiero editar un tiempo registrado para corregir errores
+- US-030: Como juez, quiero marcar un tiempo como descalificado si es necesario
+- US-031: Como juez, quiero registrar la fecha y hora exacta del registro de tiempo
+- US-032: Como juez, quiero agregar observaciones a un registro de tiempo
+
+3.6. ÉPICA 6: GESTIÓN DE RESULTADOS
+------------------------------------
+Prioridad: ALTA
+Valor de Negocio: ALTO
+Esfuerzo: MEDIO
+
+User Stories:
+- US-033: Como organizador, quiero que el sistema genere resultados automáticamente basados en los tiempos registrados
+- US-034: Como organizador, quiero ver la clasificación final de una categoría
+- US-035: Como organizador, quiero ver los puntos totales de cada atleta
+- US-036: Como organizador, quiero ver el mejor tiempo de cada atleta en una categoría
+- US-037: Como organizador, quiero exportar los resultados en formato PDF o Excel
+- US-038: Como organizador, quiero ver estadísticas de participación (cantidad de eventos por atleta)
+
+3.7. ÉPICA 7: DASHBOARD Y REPORTES
+-----------------------------------
+Prioridad: MEDIA
+Valor de Negocio: MEDIO
+Esfuerzo: MEDIO
+
+User Stories:
+- US-039: Como usuario, quiero ver un dashboard con estadísticas generales del sistema
+- US-040: Como usuario, quiero ver la cantidad de torneos activos
+- US-041: Como usuario, quiero ver la cantidad de atletas registrados
+- US-042: Como usuario, quiero ver la cantidad de inscripciones pendientes
+- US-043: Como usuario, quiero ver gráficos de participación por categoría
+
+3.8. ÉPICA 8: INTERFAZ DE USUARIO Y EXPERIENCIA
+------------------------------------------------
+Prioridad: ALTA
+Valor de Negocio: MEDIO
+Esfuerzo: MEDIO
+
+User Stories:
+- US-044: Como usuario, quiero una interfaz moderna y responsive para usar el sistema en cualquier dispositivo
+- US-045: Como usuario, quiero navegación intuitiva entre secciones
+- US-046: Como usuario, quiero ver mensajes de confirmación cuando realizo acciones importantes
+- US-047: Como usuario, quiero ver indicadores de carga mientras se procesan datos
+- US-048: Como usuario, quiero ver mensajes de error claros cuando algo falla
+
+3.9. ÉPICA 9: BACKEND Y BASE DE DATOS
+--------------------------------------
+Prioridad: CRÍTICA
+Valor de Negocio: ALTO
+Esfuerzo: ALTO
+
+User Stories:
+- US-049: Como desarrollador, quiero un backend REST API con Express.js para manejar todas las operaciones
+- US-050: Como desarrollador, quiero una base de datos MongoDB para almacenar toda la información
+- US-051: Como desarrollador, quiero modelos de datos con Mongoose para validación y estructura
+- US-052: Como desarrollador, quiero autenticación JWT segura en el backend
+- US-053: Como desarrollador, quiero encriptación de contraseñas con bcrypt
+- US-054: Como desarrollador, quiero middleware de autenticación para proteger rutas
+- US-055: Como desarrollador, quiero controladores modulares para cada entidad
+- US-056: Como desarrollador, quiero manejo centralizado de errores
+- US-057: Como desarrollador, quiero CORS configurado para permitir peticiones del frontend
+- US-058: Como desarrollador, quiero variables de entorno para configuración segura
+
+NOTA: Esta épica ha sido COMPLETADA. El backend está implementado en la carpeta server/
+
+================================================================================
+4. PLANIFICACIÓN DE SPRINTS
+================================================================================
+
+4.1. SPRINT 1: FUNDACIÓN Y AUTENTICACIÓN (2 semanas)
+------------------------------------------------------
+Objetivo: Establecer la base del proyecto y sistema de autenticación
+
+Tareas:
+- Configurar proyecto React con Vite
+- Configurar Tailwind CSS
+- Configurar React Router DOM
+- Implementar estructura de carpetas
+- Crear componente Layout y Sidebar
+- Implementar sistema de autenticación (Login)
+- Implementar ProtectedRoute
+- Configurar Axios con interceptores
+- Crear servicio de autenticación
+- Implementar manejo de tokens en localStorage
+
+User Stories Completadas:
+- US-001, US-002, US-003, US-004
+
+Definición de Terminado:
+✓ Código revisado y sin errores de linting
+✓ Login funcional con validación
+✓ Rutas protegidas implementadas
+✓ Manejo de sesión persistente
+✓ Interceptores de Axios configurados
+
+4.2. SPRINT 2: GESTIÓN BÁSICA DE TORNEOS (2 semanas)
+-----------------------------------------------------
+Objetivo: Implementar CRUD completo de torneos
+
+Tareas:
+- Crear servicio de torneos
+- Implementar página de listado de torneos
+- Implementar página de detalle de torneo
+- Crear formularios de creación y edición
+- Implementar validaciones de formularios
+- Agregar manejo de estados (loading, error, success)
+- Implementar navegación entre vistas
+
+User Stories Completadas:
+- US-005, US-006, US-007, US-008, US-009, US-010
+
+Definición de Terminado:
+✓ CRUD completo de torneos funcional
+✓ Validaciones de formularios implementadas
+✓ Manejo de errores y estados de carga
+✓ Interfaz responsive y moderna
+✓ Código documentado
+
+4.3. SPRINT 3: GESTIÓN DE ATLETAS E INSCRIPCIONES (2 semanas)
+--------------------------------------------------------------
+Objetivo: Implementar gestión de atletas e inscripciones
+
+Tareas:
+- Crear servicio de atletas
+- Implementar CRUD de atletas
+- Crear servicio de inscripciones
+- Implementar formulario de inscripción
+- Validar requisitos de categoría (edad, género)
+- Generar números de competidor únicos
+- Implementar listado y filtrado de inscripciones
+
+User Stories Completadas:
+- US-013, US-014, US-015, US-016, US-017, US-018, US-019, US-020, US-021, US-022, US-023, US-024
+
+Definición de Terminado:
+✓ CRUD de atletas completo
+✓ Sistema de inscripciones funcional
+✓ Validaciones de categorías implementadas
+✓ Números de competidor únicos
+✓ Filtros y búsqueda implementados
+
+4.4. SPRINT 4: REGISTRO DE TIEMPOS (2 semanas)
+-----------------------------------------------
+Objetivo: Implementar sistema de registro de tiempos
+
+Tareas:
+- Crear servicio de tiempos
+- Implementar formulario de registro de tiempos
+- Calcular posiciones automáticamente
+- Implementar sistema de puntos
+- Crear vista de tiempos por evento
+- Implementar edición y descalificación de tiempos
+- Validar que el tiempo corresponda a la inscripción correcta
+
+User Stories Completadas:
+- US-025, US-026, US-027, US-028, US-029, US-030, US-031, US-032
+
+Definición de Terminado:
+✓ Registro de tiempos funcional
+✓ Cálculo automático de posiciones
+✓ Sistema de puntos implementado
+✓ Validaciones de integridad de datos
+✓ Interfaz intuitiva para jueces
+
+4.5. SPRINT 5: RESULTADOS Y DASHBOARD (2 semanas)
+--------------------------------------------------
+Objetivo: Implementar generación de resultados y dashboard
+
+Tareas:
+- Crear servicio de resultados
+- Implementar cálculo automático de resultados
+- Crear vista de clasificaciones
+- Implementar dashboard con estadísticas
+- Agregar gráficos y visualizaciones
+- Implementar exportación de resultados (futuro)
+
+User Stories Completadas:
+- US-033, US-034, US-035, US-036, US-037, US-038, US-039, US-040, US-041, US-042, US-043
+
+Definición de Terminado:
+✓ Generación automática de resultados
+✓ Dashboard con estadísticas reales
+✓ Clasificaciones ordenadas correctamente
+✓ Cálculo de puntos totales preciso
+
+4.6. SPRINT 6: BACKEND Y BASE DE DATOS (3 semanas)
+----------------------------------------------------
+Objetivo: Implementar backend completo con Express.js y MongoDB
+
+Tareas Backend:
+- Configurar proyecto Node.js con Express
+- Configurar conexión a MongoDB Atlas
+- Crear modelos de datos con Mongoose (Usuario, Torneo, Atleta, etc.)
+- Implementar autenticación JWT
+- Crear controladores para cada entidad
+- Implementar rutas REST API
+- Configurar middleware de autenticación
+- Implementar manejo de errores centralizado
+- Configurar CORS
+- Configurar variables de entorno
+- Conectar frontend con backend real
+- Reemplazar datos mock por llamadas reales al API
+
+User Stories Completadas:
+- US-049, US-050, US-051, US-052, US-053, US-054, US-055, US-056, US-057, US-058
+
+Definición de Terminado:
+✓ Backend funcionando en puerto 5000
+✓ Base de datos MongoDB conectada
+✓ Todos los modelos creados y validados
+✓ Autenticación JWT funcionando
+✓ CRUD completo para todas las entidades
+✓ Frontend conectado con backend real
+✓ Sin datos mock en producción
+✓ Variables de entorno configuradas
+✓ CORS habilitado correctamente
+
+4.7. SPRINT 7: PULIR Y OPTIMIZAR (1 semana)
+--------------------------------------------
+Objetivo: Mejorar UX, performance y completar funcionalidades pendientes
+
+Tareas:
+- Mejorar diseño y responsividad
+- Optimizar rendimiento
+- Agregar animaciones y transiciones
+- Mejorar mensajes de error y feedback
+- Testing manual completo
+- Corrección de bugs
+- Documentación final
+- Testing de integración frontend-backend
+
+User Stories Completadas:
+- US-044, US-045, US-046, US-047, US-048
+
+Definición de Terminado:
+✓ Interfaz pulida y profesional
+✓ Performance optimizado
+✓ Sin bugs críticos
+✓ Documentación completa
+✓ Código limpio y mantenible
+✓ Integración frontend-backend probada
+
+================================================================================
+5. ARQUITECTURA TÉCNICA
+================================================================================
+
+5.1. ARQUITECTURA GENERAL
+-------------------------
+El proyecto sigue una arquitectura de Single Page Application (SPA) con separación
+clara de responsabilidades:
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION LAYER                       │
+│  (React Components - Pages, Layout, UI Components)             │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                        SERVICE LAYER                            │
+│  (API Services - authService, torneoService, etc.)              │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                        API LAYER                                │
+│  (Axios Configuration - Interceptors, Base URL)                 │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                        BACKEND API                               │
+│  Express.js + MongoDB (Mongoose)                                │
+│  - Rutas modulares (routes/)                                    │
+│  - Controladores (controllers/)                                │
+│  - Modelos de datos (models/)                                  │
+│  - Middleware de autenticación                                  │
+│  - Manejo de errores centralizado                              │
+└─────────────────────────────────────────────────────────────────┘
+
+5.2. PATRÓN DE DISEÑO: COMPONENT-BASED ARCHITECTURE
+----------------------------------------------------
+- Componentes reutilizables y modulares
+- Separación de lógica de presentación y lógica de negocio
+- Props para comunicación entre componentes
+- Hooks de React para manejo de estado y efectos
+
+5.3. PATRÓN DE DISEÑO: SERVICE LAYER
+-------------------------------------
+- Servicios encapsulan la lógica de comunicación con el API
+- Cada entidad tiene su propio servicio (torneoService, authService, etc.)
+- Centralización de la configuración de Axios
+
+5.4. GESTIÓN DE ESTADO
+-----------------------
+- Estado local con useState para componentes simples
+- useEffect para efectos secundarios y llamadas a API
+- localStorage para persistencia de autenticación
+- Estado global futuro con Context API o Redux (si es necesario)
+
+5.5. RUTEO
+----------
+- React Router DOM para navegación SPA
+- Rutas protegidas con componente ProtectedRoute
+- Rutas anidadas para mejor organización
+- Navegación programática cuando es necesario
+
+5.6. SEGURIDAD
+--------------
+- Tokens JWT almacenados en localStorage
+- Interceptores de Axios para agregar tokens automáticamente
+- Rutas protegidas que redirigen si no hay autenticación
+- Manejo de errores 401 para cerrar sesión automáticamente
+
+================================================================================
+6. STACK TECNOLÓGICO
+================================================================================
+
+6.1. FRONTEND FRAMEWORK
+-----------------------
+- React 19.2.0: Biblioteca principal para construcción de UI
+  - Hooks modernos (useState, useEffect, useContext)
+  - Componentes funcionales
+  - Virtual DOM para rendimiento optimizado
+
+6.2. BUILD TOOL
+---------------
+- Vite 7.2.2: Herramienta de construcción moderna y rápida
+  - Hot Module Replacement (HMR) para desarrollo rápido
+  - Optimización automática para producción
+  - Soporte nativo para ES modules
+
+6.3. ROUTING
+------------
+- React Router DOM 7.9.6: Manejo de rutas en SPA
+  - Navegación declarativa
+  - Rutas protegidas
+  - Parámetros dinámicos en URLs
+
+6.4. ESTILOS
+-------------
+- Tailwind CSS 4.1.17: Framework CSS utility-first
+  - Diseño responsive por defecto
+  - Clases utilitarias para desarrollo rápido
+  - Personalización mediante configuración
+  - Optimización automática en producción
+
+6.5. HTTP CLIENT
+----------------
+- Axios 1.13.2: Cliente HTTP para peticiones al backend
+  - Interceptores para requests y responses
+  - Manejo automático de JSON
+  - Cancelación de requests
+
+6.6. ICONOS
+-----------
+- Lucide React 0.553.0: Biblioteca de iconos moderna
+  - Iconos SVG optimizados
+  - Tree-shaking para reducir bundle size
+  - Estilo consistente
+
+6.7. HERRAMIENTAS DE DESARROLLO
+--------------------------------
+- ESLint 9.39.1: Linter para mantener calidad de código
+- TypeScript Types: Tipos para React (solo para desarrollo)
+- Vite Plugin React: Integración de React con Vite
+
+6.8. GESTIÓN DE DEPENDENCIAS
+-----------------------------
+- npm: Gestor de paquetes de Node.js
+- package.json: Definición de dependencias y scripts
+
+6.9. BACKEND STACK
+------------------
+- Node.js: Entorno de ejecución JavaScript del lado del servidor
+- Express.js 4.18.2: Framework web minimalista y flexible
+  - Middleware para parsing de JSON
+  - Sistema de rutas modular
+  - Manejo de errores centralizado
+- MongoDB: Base de datos NoSQL orientada a documentos
+  - Almacenamiento en la nube (MongoDB Atlas)
+  - Esquemas flexibles
+  - Escalabilidad horizontal
+- Mongoose 8.0.3: ODM (Object Document Mapper) para MongoDB
+  - Modelado de datos con esquemas
+  - Validación automática
+  - Middleware de modelos
+  - Queries simplificadas
+- JWT (JSON Web Token) 9.0.2: Autenticación stateless
+  - Tokens seguros y escalables
+  - Expiración configurable
+  - Verificación de firma
+- bcryptjs 2.4.3: Encriptación de contraseñas
+  - Hashing seguro de contraseñas
+  - Salt automático
+  - Comparación segura
+- CORS 2.8.5: Cross-Origin Resource Sharing
+  - Permite peticiones desde el frontend
+  - Configuración de orígenes permitidos
+- dotenv 16.3.1: Gestión de variables de entorno
+  - Configuración segura
+  - Separación de entornos
+
+================================================================================
+7. ESTRUCTURA DEL PROYECTO
+================================================================================
+
+torneos/
+│
+├── public/                          # Archivos estáticos públicos
+│   ├── manifest.json                # Manifest para PWA
+│   ├── sw.js                        # Service Worker
+│   ├── torneos.png                  # Logo/Imagen del proyecto
+│   └── vite.svg                     # Favicon
+│
+├── src/                             # Código fuente principal
+│   │
+│   ├── assets/                      # Recursos estáticos (imágenes, etc.)
+│   │   └── torneos.png
+│   │
+│   ├── components/                  # Componentes reutilizables
+│   │   ├── Header.jsx               # Componente de encabezado
+│   │   ├── Layout.jsx               # Layout principal de la aplicación
+│   │   ├── ProtectedRoute.jsx       # Componente para rutas protegidas
+│   │   └── Sidebar.jsx              # Barra lateral de navegación
+│   │
+│   ├── page/                        # Páginas/Vistas principales
+│   │   ├── Dashboard.jsx            # Página principal con estadísticas
+│   │   ├── Login.jsx                # Página de inicio de sesión
+│   │   ├── Torneos.jsx              # Listado de torneos
+│   │   ├── TorneoDetalle.jsx        # Detalle de un torneo específico
+│   │   ├── Inscripciones.jsx        # Gestión de inscripciones
+│   │   ├── Tiempos.jsx              # Registro de tiempos
+│   │   └── Resultados.jsx           # Visualización de resultados
+│   │
+│   ├── services/                    # Capa de servicios (lógica de negocio)
+│   │   ├── api.js                   # Configuración base de Axios
+│   │   ├── authService.js           # Servicio de autenticación
+│   │   ├── torneoService.js         # Servicio de torneos
+│   │   ├── atletaService.js         # Servicio de atletas
+│   │   ├── tiempoService.js         # Servicio de tiempos
+│   │   └── resultadoService.js      # Servicio de resultados
+│   │
+│   ├── index.css                    # Estilos globales
+│   └── main.jsx                     # Punto de entrada de la aplicación
+│
+├── .gitignore                       # Archivos ignorados por Git
+├── eslint.config.js                 # Configuración de ESLint
+├── index.html                       # HTML principal
+├── package.json                     # Dependencias y scripts del proyecto
+├── package-lock.json                # Lock file de dependencias
+├── vite.config.js                   # Configuración de Vite
+├── README.md                        # Documentación básica del proyecto
+├── DIAGRAMA_BASE_DATOS.md           # Diagrama de base de datos
+└── DIAGRAMA_VISUAL.txt              # Diagrama visual de entidades
+
+7.1. CONVENCIONES DE NOMENCLATURA
+----------------------------------
+- Componentes: PascalCase (ej: Dashboard.jsx, TorneoDetalle.jsx)
+- Servicios: camelCase con sufijo "Service" (ej: torneoService.js)
+- Archivos de configuración: camelCase (ej: vite.config.js)
+- Carpetas: lowercase (ej: components, services, page)
+
+7.2. ORGANIZACIÓN DE COMPONENTES
+---------------------------------
+- Componentes reutilizables en /components
+- Páginas/Vistas en /page
+- Servicios en /services
+- Assets estáticos en /assets o /public
+
+7.3. ESTRUCTURA DEL BACKEND (server/)
+-------------------------------------
+server/
+├── config/
+│   ├── config.js          # Configuración general (puerto, JWT, MongoDB)
+│   └── database.js        # Conexión a MongoDB
+├── controllers/
+│   ├── authController.js  # Controlador de autenticación
+│   ├── torneoController.js
+│   ├── atletaController.js
+│   ├── inscripcionController.js
+│   ├── tiempoController.js
+│   ├── resultadoController.js
+│   └── eventoController.js
+├── middleware/
+│   ├── auth.js            # Middleware de autenticación JWT
+│   └── errorHandler.js    # Manejo centralizado de errores
+├── models/
+│   ├── Usuario.js         # Modelo de usuario con bcrypt
+│   ├── Torneo.js
+│   ├── Categoria.js
+│   ├── Evento.js
+│   ├── Atleta.js
+│   ├── Inscripcion.js
+│   ├── Tiempo.js
+│   └── Resultado.js
+├── routes/
+│   ├── authRoutes.js      # Rutas de autenticación
+│   ├── torneoRoutes.js
+│   ├── atletaRoutes.js
+│   ├── inscripcionRoutes.js
+│   ├── tiempoRoutes.js
+│   ├── resultadoRoutes.js
+│   └── eventoRoutes.js
+├── server.js              # Archivo principal del servidor
+├── package.json           # Dependencias del backend
+├── env.example            # Ejemplo de variables de entorno
+└── README.md              # Documentación del backend
+
+7.4. ARQUITECTURA BACKEND
+-------------------------
+El backend sigue el patrón MVC (Model-View-Controller):
+- Models: Esquemas de Mongoose que definen la estructura de datos
+- Controllers: Lógica de negocio y manejo de requests/responses
+- Routes: Definición de endpoints y middleware
+- Middleware: Autenticación, validación, manejo de errores
+- Config: Configuración de base de datos y aplicación
+
+================================================================================
+8. FLUJOS DE TRABAJO PRINCIPALES
+================================================================================
+
+8.1. FLUJO DE AUTENTICACIÓN
+---------------------------
+1. Usuario accede a la aplicación
+2. Sistema verifica si hay token en localStorage
+3. Si no hay token → Redirige a /login
+4. Usuario ingresa credenciales
+5. Sistema envía petición POST a /auth/login
+6. Backend valida credenciales y retorna token JWT
+7. Sistema almacena token y datos de usuario en localStorage
+8. Redirige a /dashboard
+9. Todas las peticiones subsecuentes incluyen token en header Authorization
+
+8.2. FLUJO DE CREACIÓN DE TORNEOS
+----------------------------------
+1. Usuario navega a /torneos
+2. Hace clic en "Crear Torneo"
+3. Completa formulario con datos del torneo
+4. Sistema valida datos del formulario
+5. Envía petición POST a /api/torneos
+6. Backend crea torneo y retorna datos
+7. Sistema muestra mensaje de éxito
+8. Redirige a lista de torneos o detalle del torneo creado
+
+8.3. FLUJO DE INSCRIPCIÓN DE ATLETAS
+-------------------------------------
+1. Usuario navega a /inscripciones
+2. Selecciona torneo y categoría
+3. Busca o crea atleta
+4. Sistema valida que atleta cumpla requisitos de categoría (edad, género)
+5. Sistema genera número de competidor único
+6. Envía petición POST a /api/inscripciones
+7. Backend valida y crea inscripción
+8. Sistema muestra confirmación
+9. Actualiza lista de inscripciones
+
+8.4. FLUJO DE REGISTRO DE TIEMPOS
+----------------------------------
+1. Juez navega a /tiempos
+2. Selecciona torneo, categoría y evento
+3. Busca atleta o selecciona de lista de inscritos
+4. Ingresa tiempo del atleta
+5. Sistema calcula posición automáticamente
+6. Sistema asigna puntos según posición
+7. Envía petición POST a /api/tiempos
+8. Backend valida y registra tiempo
+9. Sistema actualiza lista de tiempos
+10. Si es el último evento, sistema puede generar resultados automáticamente
+
+8.5. FLUJO DE GENERACIÓN DE RESULTADOS
+---------------------------------------
+1. Organizador navega a /resultados
+2. Selecciona torneo y categoría
+3. Sistema calcula resultados basándose en tiempos registrados:
+   - Suma puntos de todos los eventos
+   - Identifica mejor tiempo
+   - Cuenta cantidad de eventos participados
+   - Ordena por puntos totales (mayor a menor)
+4. Sistema genera clasificación final
+5. Muestra resultados en tabla ordenada
+6. Opción de exportar resultados (futuro)
+
+================================================================================
+9. MODELO DE DATOS Y ENTIDADES
+================================================================================
+
+9.1. ENTIDADES PRINCIPALES
+---------------------------
+
+USUARIOS
+--------
+- id (PK)
+- email (UNIQUE)
+- password (hasheado)
+- nombre
+- apellido
+- rol (admin, juez, organizador)
+- activo (boolean)
+- created_at, updated_at
+
+TORNEOS
+-------
+- id (PK)
+- nombre
+- deporte
+- fecha
+- ubicacion
+- descripcion
+- usuario_id (FK → USUARIOS)
+- estado (planificado, en_curso, finalizado, cancelado)
+- created_at, updated_at
+
+CATEGORIAS
+----------
+- id (PK)
+- torneo_id (FK → TORNEOS)
+- nombre
+- descripcion
+- edad_minima
+- edad_maxima
+- genero (Masculino, Femenino, Mixto)
+- created_at, updated_at
+
+EVENTOS
+-------
+- id (PK)
+- torneo_id (FK → TORNEOS)
+- nombre
+- distancia
+- estilo
+- orden
+- created_at, updated_at
+
+ATLETAS
+-------
+- id (PK)
+- nombre
+- apellido
+- fecha_nacimiento
+- genero
+- nacionalidad
+- club
+- email (UNIQUE)
+- telefono
+- especialidad
+- mejor_tiempo
+- categoria_preferida
+- created_at, updated_at
+
+INSCRIPCIONES
+-------------
+- id (PK)
+- torneo_id (FK → TORNEOS)
+- categoria_id (FK → CATEGORIAS)
+- atleta_id (FK → ATLETAS)
+- numero_competidor (UNIQUE por torneo)
+- fecha_inscripcion
+- estado (pendiente, confirmada, cancelada)
+- observaciones
+- created_at, updated_at
+
+TIEMPOS
+-------
+- id (PK)
+- torneo_id (FK → TORNEOS)
+- categoria_id (FK → CATEGORIAS)
+- evento_id (FK → EVENTOS)
+- atleta_id (FK → ATLETAS)
+- inscripcion_id (FK → INSCRIPCIONES)
+- tiempo
+- posicion
+- puntos
+- usuario_registro_id (FK → USUARIOS)
+- fecha_registro
+- estado (pendiente, confirmado, descalificado)
+- observaciones
+- created_at, updated_at
+
+RESULTADOS
+----------
+- id (PK)
+- torneo_id (FK → TORNEOS)
+- categoria_id (FK → CATEGORIAS)
+- atleta_id (FK → ATLETAS)
+- inscripcion_id (FK → INSCRIPCIONES)
+- posicion_final
+- puntos_totales
+- mejor_tiempo
+- cantidad_eventos
+- fecha_generacion
+- created_at, updated_at
+
+9.2. RELACIONES PRINCIPALES
+----------------------------
+- USUARIOS (1) ────< (N) TORNEOS
+- TORNEOS (1) ────< (N) CATEGORIAS
+- TORNEOS (1) ────< (N) EVENTOS
+- TORNEOS (1) ────< (N) INSCRIPCIONES
+- CATEGORIAS (1) ────< (N) INSCRIPCIONES
+- ATLETAS (1) ────< (N) INSCRIPCIONES
+- INSCRIPCIONES (1) ────< (N) TIEMPOS
+- EVENTOS (1) ────< (N) TIEMPOS
+- CATEGORIAS (1) ────< (N) RESULTADOS
+
+================================================================================
+10. DEFINICIÓN DE TERMINADO (DOD - Definition of Done)
+================================================================================
+
+Una User Story o tarea se considera "Terminada" cuando cumple TODOS los siguientes
+criterios:
+
+10.1. CRITERIOS TÉCNICOS
+-------------------------
+✓ Código escrito y funcionando correctamente
+✓ Código revisado (self-review mínimo)
+✓ Sin errores de linting (ESLint)
+✓ Sin errores de compilación
+✓ Código sigue las convenciones del proyecto
+✓ Funcionalidad probada manualmente
+✓ Manejo de errores implementado
+✓ Estados de carga implementados (loading states)
+
+10.2. CRITERIOS DE CALIDAD
+---------------------------
+✓ La funcionalidad cumple con los requerimientos de la User Story
+✓ La interfaz es responsive (funciona en móvil, tablet y desktop)
+✓ Los mensajes de error son claros y útiles
+✓ La experiencia de usuario es fluida e intuitiva
+✓ No hay regresiones en funcionalidades existentes
+
+10.3. CRITERIOS DE INTEGRACIÓN
+-------------------------------
+✓ Integración con backend funcionando correctamente
+✓ Manejo de respuestas del API implementado
+✓ Manejo de errores de red implementado
+✓ Autenticación y autorización funcionando
+
+10.4. CRITERIOS DE DOCUMENTACIÓN
+---------------------------------
+✓ Código con comentarios donde sea necesario
+✓ Nombres de variables y funciones descriptivos
+✓ README actualizado si hay cambios importantes
+✓ Documentación de API actualizada si hay cambios
+
+10.5. CRITERIOS DE DEPLOYMENT
+------------------------------
+✓ Código mergeado a la rama principal (main/master)
+✓ Build de producción sin errores
+✓ Aplicación desplegada y accesible (si aplica)
+
+================================================================================
+11. EVENTOS SCRUM
+================================================================================
+
+11.1. SPRINT PLANNING (Planificación de Sprint)
+------------------------------------------------
+Duración: 2-4 horas (para sprints de 2 semanas)
+Participantes: Product Owner, Scrum Master, Equipo de Desarrollo
+
+Actividades:
+- Revisar Product Backlog priorizado
+- Seleccionar User Stories para el Sprint
+- Descomponer User Stories en tareas técnicas
+- Estimar esfuerzo de cada tarea (horas o story points)
+- Definir Sprint Goal (objetivo del sprint)
+- Comprometerse con el trabajo del Sprint
+
+Resultado: Sprint Backlog con tareas estimadas y planificadas
+
+11.2. DAILY STANDUP (Reunión Diaria)
+---------------------------------------
+Duración: 15 minutos máximo
+Frecuencia: Diaria, misma hora y lugar
+Participantes: Equipo de Desarrollo, Scrum Master
+
+Preguntas a responder:
+1. ¿Qué hice ayer?
+2. ¿Qué haré hoy?
+3. ¿Hay algún impedimento?
+
+Propósito: Sincronización del equipo, identificación temprana de problemas
+
+11.3. SPRINT REVIEW (Revisión de Sprint)
+-----------------------------------------
+Duración: 1-2 horas
+Frecuencia: Al final de cada Sprint
+Participantes: Product Owner, Scrum Master, Equipo de Desarrollo, Stakeholders
+
+Actividades:
+- Demostrar funcionalidades completadas
+- Recibir feedback de stakeholders
+- Actualizar Product Backlog si es necesario
+- Discutir qué se logró y qué no
+
+Resultado: Feedback incorporado, Product Backlog actualizado
+
+11.4. SPRINT RETROSPECTIVE (Retrospectiva)
+------------------------------------------
+Duración: 1-2 horas
+Frecuencia: Al final de cada Sprint
+Participantes: Product Owner, Scrum Master, Equipo de Desarrollo
+
+Actividades:
+- Revisar qué salió bien (Keep)
+- Identificar qué mejorar (Improve)
+- Proponer acciones concretas (Start/Stop)
+- Comprometerse con mejoras para el próximo Sprint
+
+Resultado: Plan de acción para mejorar el proceso
+
+11.5. BACKLOG REFINEMENT (Refinamiento de Backlog)
+---------------------------------------------------
+Duración: 1-2 horas
+Frecuencia: Durante el Sprint (no en Daily Standup)
+Participantes: Product Owner, Equipo de Desarrollo
+
+Actividades:
+- Aclarar detalles de User Stories futuras
+- Descomponer User Stories grandes en más pequeñas
+- Estimar User Stories
+- Priorizar User Stories
+- Asegurar que User Stories cumplan criterios INVEST
+
+Resultado: Product Backlog refinado y listo para próximos Sprints
+
+================================================================================
+12. MÉTRICAS Y KPIs
+================================================================================
+
+12.1. VELOCIDAD DEL EQUIPO
+---------------------------
+Métrica: Story Points completados por Sprint
+Objetivo: Establecer velocidad consistente para mejor planificación
+Tracking: Gráfico de velocidad a lo largo de los sprints
+
+12.2. BURNDOWN CHART
+---------------------
+Métrica: Trabajo restante vs tiempo en el Sprint
+Objetivo: Visualizar progreso del Sprint
+Tracking: Actualización diaria del burndown chart
+
+12.3. TASA DE COMPLETITUD
+--------------------------
+Métrica: % de User Stories completadas vs planificadas
+Objetivo: Medir capacidad de planificación y ejecución
+Tracking: (User Stories completadas / User Stories planificadas) * 100
+
+12.4. TIEMPO DE CICLO
+----------------------
+Métrica: Tiempo desde inicio hasta finalización de una User Story
+Objetivo: Identificar cuellos de botella
+Tracking: Promedio de días por User Story
+
+12.5. DEFECTOS EN PRODUCCIÓN
+-----------------------------
+Métrica: Cantidad de bugs encontrados después del release
+Objetivo: Medir calidad del código entregado
+Tracking: Bugs reportados / Funcionalidades entregadas
+
+12.6. SATISFACCIÓN DEL USUARIO
+-------------------------------
+Métrica: Feedback cualitativo y cuantitativo de usuarios
+Objetivo: Asegurar que el producto cumple expectativas
+Tracking: Encuestas, entrevistas, métricas de uso
+
+================================================================================
+13. RIESGOS Y MITIGACIONES
+================================================================================
+
+13.1. RIESGO: Cambios en requerimientos del backend
+----------------------------------------------------
+Probabilidad: MEDIA
+Impacto: ALTO
+Mitigación:
+- Comunicación constante con equipo backend
+- Documentación clara de contratos de API
+- Uso de mocks/simulaciones durante desarrollo
+- Flexibilidad en la capa de servicios
+
+13.2. RIESGO: Retrasos en integración con backend
+-------------------------------------------------
+Probabilidad: MEDIA
+Impacto: ALTO
+Mitigación:
+- Desarrollo con datos mock durante desarrollo frontend
+- Definición temprana de contratos de API
+- Desarrollo paralelo cuando sea posible
+- Buffer de tiempo en planificación
+
+13.3. RIESGO: Problemas de rendimiento con grandes volúmenes de datos
+-----------------------------------------------------------------------
+Probabilidad: BAJA
+Impacto: MEDIO
+Mitigación:
+- Implementar paginación en listados
+- Lazy loading de componentes
+- Optimización de queries al backend
+- Caching cuando sea apropiado
+
+13.4. RIESGO: Problemas de seguridad (XSS, CSRF, etc.)
+--------------------------------------------------------
+Probabilidad: BAJA
+Impacto: ALTO
+Mitigación:
+- Validación de inputs en frontend y backend
+- Uso de librerías seguras
+- Sanitización de datos
+- Revisión de seguridad periódica
+
+13.5. RIESGO: Falta de experiencia del equipo con tecnologías
+---------------------------------------------------------------
+Probabilidad: MEDIA
+Impacto: MEDIO
+Mitigación:
+- Capacitación continua
+- Code reviews entre pares
+- Documentación técnica
+- Pair programming cuando sea necesario
+
+13.6. RIESGO: Scope creep (expansión descontrolada del alcance)
+----------------------------------------------------------------
+Probabilidad: MEDIA
+Impacto: ALTO
+Mitigación:
+- Product Owner estricto con prioridades
+- Revisión de Product Backlog regular
+- Definición clara de MVP (Minimum Viable Product)
+- Postergar features no críticas para futuros sprints
+
+================================================================================
+14. ROADMAP Y VISIÓN FUTURA
+================================================================================
+
+14.1. FASE 1: MVP (Minimum Viable Product) - ACTUAL
+----------------------------------------------------
+✓ Autenticación y autorización
+✓ CRUD de torneos
+✓ Gestión de atletas
+✓ Sistema de inscripciones
+✓ Registro de tiempos
+✓ Generación de resultados
+✓ Dashboard básico
+
+14.2. FASE 2: MEJORAS Y OPTIMIZACIONES (Próximos 3 meses)
+----------------------------------------------------------
+- Exportación de resultados a PDF/Excel
+- Notificaciones por email
+- Búsqueda avanzada y filtros complejos
+- Gráficos y visualizaciones avanzadas
+- Historial de cambios y auditoría
+- Sistema de roles y permisos granular
+
+14.3. FASE 3: FUNCIONALIDADES AVANZADAS (6-12 meses)
+-----------------------------------------------------
+- Aplicación móvil (React Native)
+- Sistema de notificaciones push
+- Integración con sistemas de cronometraje electrónico
+- API pública para integraciones
+- Sistema de reportes personalizados
+- Dashboard analítico avanzado
+- Multi-tenancy (soporte para múltiples organizaciones)
+
+14.4. FASE 4: ESCALABILIDAD Y PERFORMANCE (12+ meses)
+-------------------------------------------------------
+- Optimización de base de datos
+- Caching avanzado (Redis)
+- CDN para assets estáticos
+- Microservicios si es necesario
+- Monitoreo y logging avanzado
+- Sistema de backup automático
+
+================================================================================
+15. MEJORES PRÁCTICAS IMPLEMENTADAS
+================================================================================
+
+15.1. DESARROLLO
+----------------
+✓ Separación de responsabilidades (Service Layer Pattern)
+✓ Componentes reutilizables y modulares
+✓ Código limpio y legible
+✓ Convenciones de nomenclatura consistentes
+✓ Manejo de errores robusto
+✓ Validación de datos en frontend
+
+15.2. SEGURIDAD
+---------------
+✓ Autenticación con JWT
+✓ Rutas protegidas
+✓ Interceptores para manejo de tokens
+✓ Validación de inputs
+✓ Manejo seguro de tokens en localStorage
+
+15.3. UX/UI
+-----------
+✓ Diseño responsive
+✓ Feedback visual (loading states, mensajes)
+✓ Navegación intuitiva
+✓ Interfaz moderna con Tailwind CSS
+✓ Iconos consistentes con Lucide React
+
+15.4. PERFORMANCE
+-----------------
+✓ Lazy loading de rutas (futuro)
+✓ Optimización de bundle con Vite
+✓ Tree-shaking de dependencias
+✓ Componentes optimizados
+
+15.5. MANTENIBILIDAD
+--------------------
+✓ Estructura de carpetas clara
+✓ Servicios separados por entidad
+✓ Código documentado
+✓ Configuración centralizada
+
+================================================================================
+16. HERRAMIENTAS Y RECURSOS
+================================================================================
+
+16.1. HERRAMIENTAS DE DESARROLLO
+---------------------------------
+- Visual Studio Code / Cursor: Editor de código
+- Git: Control de versiones
+- npm: Gestor de paquetes
+- Chrome DevTools: Debugging y profiling
+- React DevTools: Extensión para debugging de React
+
+16.2. HERRAMIENTAS DE COMUNICACIÓN
+-----------------------------------
+- Documentación en archivos .txt y .md
+- Comentarios en código
+- README actualizado
+
+16.3. HERRAMIENTAS DE TESTING (Futuro)
+---------------------------------------
+- Jest: Framework de testing
+- React Testing Library: Testing de componentes
+- Cypress: Testing end-to-end (futuro)
+
+16.4. HERRAMIENTAS DE DEPLOYMENT (Futuro)
+-------------------------------------------
+- Vercel / Netlify: Hosting de aplicaciones React
+- GitHub Actions: CI/CD (futuro)
+- Docker: Containerización (futuro)
+
+================================================================================
+17. GLOSARIO DE TÉRMINOS SCRUM
+================================================================================
+
+PRODUCT BACKLOG: Lista priorizada de todo el trabajo que necesita hacerse en el producto.
+
+SPRINT: Período de tiempo fijo (típicamente 1-4 semanas) durante el cual se completa
+        un incremento de producto.
+
+SPRINT BACKLOG: Lista de tareas seleccionadas del Product Backlog para un Sprint específico.
+
+USER STORY: Descripción de una funcionalidad desde la perspectiva del usuario final.
+            Formato: "Como [rol], quiero [acción] para [beneficio]".
+
+SPRINT GOAL: Objetivo claro y conciso que el equipo se compromete a lograr en el Sprint.
+
+INCREMENT: Suma de todos los Product Backlog Items completados durante un Sprint.
+
+DEFINITION OF DONE (DOD): Criterios que deben cumplirse para que un trabajo se considere
+                          completado.
+
+VELOCITY: Medida de la cantidad de trabajo que un equipo puede completar en un Sprint.
+
+BURNDOWN CHART: Gráfico que muestra el trabajo restante vs tiempo en un Sprint.
+
+DAILY STANDUP: Reunión diaria de 15 minutos para sincronizar el equipo.
+
+SPRINT REVIEW: Reunión al final del Sprint para demostrar el trabajo completado.
+
+RETROSPECTIVE: Reunión al final del Sprint para reflexionar y mejorar el proceso.
+
+PRODUCT OWNER: Persona responsable de maximizar el valor del producto y gestionar el
+               Product Backlog.
+
+SCRUM MASTER: Persona responsable de asegurar que el equipo siga los principios Scrum.
+
+DEVELOPMENT TEAM: Grupo de profesionales que realizan el trabajo de entregar un incremento
+                  de producto.
+
+STAKEHOLDER: Persona con interés en el producto pero que no está directamente involucrada
+             en el desarrollo.
+
+EPIC: Agrupación grande de User Stories relacionadas que pueden descomponerse en
+      historias más pequeñas.
+
+SPIKE: Tarea de investigación o exploración técnica para reducir incertidumbre.
+
+TECHNICAL DEBT: Compromisos técnicos que se hacen para entregar rápido pero que deben
+                pagarse después.
+
+================================================================================
+18. CONTACTO Y REFERENCIAS
+================================================================================
+
+Desarrollador: Raymar Teran
+CI: 25604593
+Institución: Universidad Valle del Momboy
+Materia: Frontend 2
+Carrera: Ingeniería de Computación
+
+TECNOLOGÍAS UTILIZADAS:
+- React: https://react.dev/
+- Vite: https://vitejs.dev/
+- Tailwind CSS: https://tailwindcss.com/
+- React Router: https://reactrouter.com/
+- Axios: https://axios-http.com/
+- Lucide React: https://lucide.dev/
+
+METODOLOGÍA:
+- Scrum Guide: https://scrumguides.org/
+- Agile Manifesto: https://agilemanifesto.org/
+
+================================================================================
+                            FIN DE LA DOCUMENTACIÓN
+================================================================================
+
+Esta documentación sigue las mejores prácticas de metodología Scrum y desarrollo
+web profesional. Se actualiza continuamente según el progreso del proyecto y los
+cambios en los requerimientos.
+
+Última actualización: 2024
+Versión del documento: 1.0
+

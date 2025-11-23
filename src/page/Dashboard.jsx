@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { torneoService } from '../services/torneoService';
 import { atletaService } from '../services/atletaService';
+import { tiempoService } from '../services/tiempoService';
 import { Loader2 } from 'lucide-react';
 
 function Dashboard() {
@@ -20,11 +21,52 @@ function Dashboard() {
           atletaService.getAll(),
         ]);
         
+        const torneos = torneosRes.data || [];
+        const atletas = atletasRes.data || [];
+        
+        // Obtener todas las inscripciones de todos los torneos
+        let totalInscripciones = 0;
+        try {
+          const inscripcionesPromises = torneos.map(torneo => 
+            atletaService.getInscripciones(torneo._id).catch(() => ({ data: [] }))
+          );
+          const inscripcionesResults = await Promise.all(inscripcionesPromises);
+          totalInscripciones = inscripcionesResults.reduce((total, res) => {
+            return total + (res.data?.length || 0);
+          }, 0);
+        } catch (error) {
+          console.error('Error cargando inscripciones:', error);
+        }
+        
+        // Contar tiempos (resultados) - obtener tiempos de todas las categorías de todos los torneos
+        let totalTiempos = 0;
+        try {
+          for (const torneo of torneos) {
+            try {
+              const categoriasRes = await torneoService.getCategorias(torneo._id);
+              const categorias = categoriasRes.data || [];
+              
+              for (const categoria of categorias) {
+                try {
+                  const tiemposRes = await tiempoService.getByCategoria(torneo._id, categoria._id);
+                  totalTiempos += tiemposRes.data?.length || 0;
+                } catch {
+                  // Ignorar errores de categorías sin tiempos
+                }
+              }
+            } catch {
+              // Ignorar errores de torneos sin categorías
+            }
+          }
+        } catch (error) {
+          console.error('Error cargando tiempos:', error);
+        }
+        
         setStats({
-          torneos: torneosRes.data?.length || 0,
-          atletas: atletasRes.data?.length || 0,
-          inscripciones: 0,
-          resultados: 0,
+          torneos: torneos.length,
+          atletas: atletas.length,
+          inscripciones: totalInscripciones,
+          resultados: totalTiempos,
         });
       } catch (error) {
         console.error('Error cargando estadísticas:', error);

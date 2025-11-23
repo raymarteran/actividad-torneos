@@ -9,6 +9,7 @@ function Inscripciones() {
   const [categorias, setCategorias] = useState([]);
   const [inscripciones, setInscripciones] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [InscribiendoAtleta, setInscribiendoAtleta] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -58,9 +59,18 @@ function Inscripciones() {
       console.error('Error cargando inscripciones:', error);
     }
   };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setInscribiendoAtleta(true);
     try {
       await atletaService.inscribir(
         selectedTorneo,
@@ -86,6 +96,8 @@ function Inscripciones() {
     } catch (error) {
       console.error('Error inscribiendo atleta:', error);
       alert('Error al inscribir el atleta');
+    } finally {
+      setInscribiendoAtleta(false);
     }
   };
 
@@ -110,8 +122,8 @@ function Inscripciones() {
         >
           <option value="">Seleccione un torneo</option>
           {torneos.map((torneo) => (
-            <option key={torneo.id} value={torneo.id}>
-              {torneo.nombre} - {torneo.fecha}
+            <option key={torneo._id} value={torneo._id}>
+              {torneo.nombre} - {formatDate(torneo.fecha)}
             </option>
           ))}
         </select>
@@ -205,20 +217,25 @@ function Inscripciones() {
                   >
                     <option value="">Seleccione una categoría</option>
                     {categorias.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
+                      <option key={cat._id} value={cat._id}>
                         {cat.nombre}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
-
+              
+              { InscribiendoAtleta && (
+                  <Loader2 className="w-8 h-8 animate-spin" />
+              )}
+              { !InscribiendoAtleta && (
               <button
                 type="submit"
                 className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90"
               >
                 Inscribir Atleta
               </button>
+              )}
             </form>
           )}
 
@@ -241,18 +258,18 @@ function Inscripciones() {
                   </tr>
                 ) : (
                   inscripciones.map((inscripcion) => (
-                    <tr key={inscripcion.id} className="hover:bg-gray-50">
+                    <tr key={inscripcion._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {inscripcion.atleta?.nombre} {inscripcion.atleta?.apellido}
+                        {inscripcion.atleta_id?.nombre} {inscripcion.atleta_id?.apellido}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {inscripcion.atleta?.email}
+                        {inscripcion.atleta_id?.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {inscripcion.categoria?.nombre}
+                        {inscripcion.categoria_id?.nombre}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {inscripcion.fechaInscripcion}
+                        {inscripcion.fecha_inscripcion ? formatDate(inscripcion.fecha_inscripcion) : '-'}
                       </td>
                     </tr>
                   ))

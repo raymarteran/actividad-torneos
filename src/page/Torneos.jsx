@@ -7,6 +7,7 @@ function Torneos() {
   const [torneos, setTorneos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [creandoTorneo, setCreandoTorneo] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     deporte: '',
@@ -34,6 +35,7 @@ function Torneos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setCreandoTorneo(true);
     try {
       const data = {
         ...formData,
@@ -49,6 +51,8 @@ function Torneos() {
     } catch (error) {
       console.error('Error creando torneo:', error);
       alert('Error al crear el torneo');
+    } finally {
+      setCreandoTorneo(false);
     }
   };
 
@@ -227,13 +231,17 @@ function Torneos() {
               </div>
             ))}
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90"
-          >
-            Crear Torneo
-          </button>
+          { creandoTorneo && (
+            <Loader2 className="w-8 h-8 animate-spin" />
+          )}
+          { !creandoTorneo && (
+            <button
+              type="submit"
+              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90"
+            >
+              Crear Torneo
+            </button>
+          )}
         </form>
       )}
 
@@ -245,7 +253,7 @@ function Torneos() {
         ) : (
           torneos.map((torneo) => (
             <div
-              key={torneo.id}
+              key={torneo._id}
               className="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary hover:shadow-lg transition-shadow"
             >
               <h3 className="text-xl font-semibold text-primary mb-2">{torneo.nombre}</h3>
@@ -259,7 +267,7 @@ function Torneos() {
                 <span className="font-medium">Ubicación:</span> {torneo.ubicacion}
               </p>
               <Link
-                to={`/torneos/${torneo.id}`}
+                to={`/torneos/${torneo._id}`}
                 className="text-primary hover:underline font-medium"
               >
                 Ver detalles →

@@ -1,0 +1,235 @@
+================================================================================
+DIAGRAMA VISUAL DE BASE DE DATOS - SISTEMA DE GESTIÓN DE TORNEOS
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           ESTRUCTURA DE ENTIDADES                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────┐
+│   USUARIOS  │
+├──────────────┤
+│ PK id        │
+│    email     │
+│    password  │
+│    nombre    │
+│    apellido  │
+│    rol       │
+│    activo    │
+│    timestamps│
+└──────┬───────┘
+       │
+       │ 1
+       │
+       │ N
+       │
+       ▼
+┌──────────────┐
+│   TORNEOS    │
+├──────────────┤
+│ PK id        │
+│    nombre    │
+│    deporte   │
+│    fecha     │
+│    ubicacion │
+│    descripcion│
+│ FK usuario_id│
+│    estado    │
+│    timestamps│
+└───┬──────┬───┘
+    │      │
+    │ 1    │ 1
+    │      │
+    │ N    │ N
+    │      │
+    ▼      ▼
+┌──────────────┐  ┌──────────────┐
+│ CATEGORIAS   │  │   EVENTOS    │
+├──────────────┤  ├──────────────┤
+│ PK id        │  │ PK id        │
+│ FK torneo_id │  │ FK torneo_id │
+│    nombre    │  │    nombre    │
+│    descripcion│ │    distancia │
+│    edad_min  │  │    estilo    │
+│    edad_max  │  │    orden     │
+│    genero    │  │    timestamps│
+│    timestamps│  └──────────────┘
+└───┬──────────┘
+    │
+    │ 1
+    │
+    │ N
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          INSCRIPCIONES                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK id                                                                       │
+│ FK torneo_id                                                                │
+│ FK categoria_id                                                             │
+│ FK atleta_id                                                                │
+│    numero_competidor (UNIQUE)                                              │
+│    fecha_inscripcion                                                       │
+│    estado                                                                   │
+│    observaciones                                                            │
+│    timestamps                                                               │
+└───┬───────────────────────────────────────────────────────────────────────┘
+    │
+    │ 1
+    │
+    │ N
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            TIEMPOS                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK id                                                                       │
+│ FK torneo_id                                                                │
+│ FK categoria_id                                                             │
+│ FK evento_id                                                                │
+│ FK atleta_id                                                                │
+│ FK inscripcion_id                                                           │
+│ FK usuario_registro_id                                                      │
+│    tiempo                                                                   │
+│    posicion                                                                 │
+│    puntos                                                                   │
+│    fecha_registro                                                           │
+│    estado                                                                   │
+│    observaciones                                                            │
+│    timestamps                                                               │
+└───┬───────────────────────────────────────────────────────────────────────┘
+    │
+    │ 1
+    │
+    │ N
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          RESULTADOS                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK id                                                                       │
+│ FK torneo_id                                                                │
+│ FK categoria_id                                                             │
+│ FK atleta_id                                                                │
+│ FK inscripcion_id                                                           │
+│    posicion_final                                                           │
+│    puntos_totales                                                           │
+│    mejor_tiempo                                                             │
+│    cantidad_eventos                                                          │
+│    fecha_generacion                                                         │
+│    timestamps                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────┐
+│   ATLETAS    │
+├──────────────┤
+│ PK id        │
+│    nombre    │
+│    apellido  │
+│    fecha_nac │
+│    genero    │
+│    nacionalidad│
+│    club      │
+│    email     │
+│    telefono  │
+│    especialidad│
+│    mejor_tiempo│
+│    categoria_pref│
+│    timestamps│
+└──────┬───────┘
+       │
+       │ 1
+       │
+       │ N
+       │
+       ▼
+   (Relación a través de INSCRIPCIONES)
+
+================================================================================
+                           RELACIONES PRINCIPALES
+================================================================================
+
+1. USUARIOS → TORNEOS (1:N)
+   Un usuario puede crear múltiples torneos
+
+2. TORNEOS → CATEGORIAS (1:N)
+   Un torneo tiene múltiples categorías
+
+3. TORNEOS → EVENTOS (1:N)
+   Un torneo contiene múltiples eventos
+
+4. TORNEOS → INSCRIPCIONES (1:N)
+   Un torneo recibe múltiples inscripciones
+
+5. CATEGORIAS → INSCRIPCIONES (1:N)
+   Una categoría agrupa múltiples inscripciones
+
+6. ATLETAS → INSCRIPCIONES (1:N)
+   Un atleta puede tener múltiples inscripciones
+
+7. INSCRIPCIONES → TIEMPOS (1:N)
+   Una inscripción genera múltiples tiempos
+
+8. EVENTOS → TIEMPOS (1:N)
+   Un evento tiene múltiples tiempos registrados
+
+9. TIEMPOS → RESULTADOS (N:1)
+   Los tiempos generan resultados
+
+10. CATEGORIAS → TIEMPOS (1:N)
+    Una categoría registra múltiples tiempos
+
+11. CATEGORIAS → RESULTADOS (1:N)
+    Una categoría tiene múltiples resultados
+
+================================================================================
+                           CARDINALIDADES
+================================================================================
+
+USUARIOS (1) ────────< (N) TORNEOS
+TORNEOS (1) ────────< (N) CATEGORIAS
+TORNEOS (1) ────────< (N) EVENTOS
+TORNEOS (1) ────────< (N) INSCRIPCIONES
+CATEGORIAS (1) ─────< (N) INSCRIPCIONES
+ATLETAS (1) ────────< (N) INSCRIPCIONES
+INSCRIPCIONES (1) ──< (N) TIEMPOS
+EVENTOS (1) ────────< (N) TIEMPOS
+CATEGORIAS (1) ─────< (N) TIEMPOS
+CATEGORIAS (1) ─────< (N) RESULTADOS
+ATLETAS (1) ────────< (N) RESULTADOS
+TORNEOS (1) ────────< (N) RESULTADOS
+
+================================================================================
+                           FLUJO DE DATOS
+================================================================================
+
+1. CREACIÓN DE TORNEOS
+   USUARIO → Crea → TORNEOS
+   TORNEOS → Tiene → CATEGORIAS
+   TORNEOS → Contiene → EVENTOS
+
+2. INSCRIPCIÓN DE ATLETAS
+   ATLETAS → Se inscribe → INSCRIPCIONES
+   INSCRIPCIONES → Pertenece a → TORNEOS + CATEGORIAS
+
+3. REGISTRO DE TIEMPOS
+   INSCRIPCIONES → Genera → TIEMPOS
+   TIEMPOS → Corresponde a → EVENTOS
+   TIEMPOS → Registrado por → USUARIOS
+
+4. GENERACIÓN DE RESULTADOS
+   TIEMPOS → Genera → RESULTADOS
+   RESULTADOS → Clasifica → ATLETAS por CATEGORIAS
+
+================================================================================
+                           RESTRICCIONES IMPORTANTES
+================================================================================
+
+✓ Un atleta solo puede tener UNA inscripción activa por categoría en un torneo
+✓ El número de competidor debe ser ÚNICO por torneo
+✓ Un atleta solo puede tener UN resultado por categoría en un torneo
+✓ Los tiempos deben estar asociados a una inscripción válida
+✓ La edad del atleta debe cumplir con los rangos de la categoría
+
+================================================================================
+

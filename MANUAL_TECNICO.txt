@@ -1,0 +1,2237 @@
+================================================================================
+                    MANUAL TÉCNICO - SISTEMA DE GESTIÓN DE TORNEOS
+                    Documentación Técnica para Desarrolladores
+================================================================================
+
+INFORMACIÓN DEL PROYECTO
+================================================================================
+
+Nombre: Sistema de Gestión de Torneos Deportivos
+Versión: 1.0.0
+Tipo: Aplicación Full-Stack (Frontend SPA + Backend REST API)
+Frontend: React 19.2.0 con Vite 7.2.2
+Backend: Node.js con Express.js 4.18.2
+Base de Datos: MongoDB con Mongoose 8.0.3
+Autor: Raymar Teran
+CI: 25604593
+Institución: Universidad Valle del Momboy
+Fecha: 2024
+
+ARQUITECTURA GENERAL
+================================================================================
+El proyecto está dividido en dos partes principales:
+
+1. FRONTEND (Carpeta raíz)
+   - React 19.2.0 con Vite
+   - Single Page Application (SPA)
+   - Puerto de desarrollo: 5173
+   - Puerto de producción: Configurable
+
+2. BACKEND (Carpeta server/)
+   - Node.js con Express.js
+   - REST API
+   - MongoDB Atlas (base de datos en la nube)
+   - Puerto: 5000
+   - Autenticación JWT
+
+================================================================================
+1. INTRODUCCIÓN
+================================================================================
+
+1.1. PROPÓSITO DEL MANUAL
+--------------------------
+Este manual técnico proporciona información detallada sobre la arquitectura,
+implementación, configuración y mantenimiento del Sistema de Gestión de Torneos.
+Está dirigido a desarrolladores que trabajarán en el proyecto, tanto para
+entender el código existente como para realizar modificaciones o extensiones.
+
+1.2. ALCANCE
+-------------
+El manual cubre:
+- Arquitectura y diseño del sistema
+- Configuración del entorno de desarrollo
+- Estructura del código y organización
+- Componentes y servicios implementados
+- Patrones de diseño utilizados
+- Guías de desarrollo y mejores prácticas
+- Troubleshooting y solución de problemas
+
+1.3. AUDIENCIA
+--------------
+- Desarrolladores frontend
+- Arquitectos de software
+- Mantenedores del código
+- Estudiantes de desarrollo web
+
+================================================================================
+2. REQUISITOS DEL SISTEMA
+================================================================================
+
+2.1. REQUISITOS DE HARDWARE
+----------------------------
+Mínimos:
+- Procesador: Dual-core 2.0 GHz o superior
+- RAM: 4 GB
+- Espacio en disco: 500 MB libres
+- Conexión a Internet (para descargar dependencias)
+
+Recomendados:
+- Procesador: Quad-core 2.5 GHz o superior
+- RAM: 8 GB o más
+- Espacio en disco: 1 GB libres
+- Conexión a Internet estable
+
+2.2. REQUISITOS DE SOFTWARE
+-----------------------------
+Obligatorios:
+- Node.js: Versión 18.x o superior
+- npm: Versión 9.x o superior (incluido con Node.js)
+- Navegador moderno: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+
+Opcionales pero recomendados:
+- Git: Para control de versiones
+- Visual Studio Code / Cursor: Editor de código recomendado
+- React DevTools: Extensión del navegador para debugging
+- ESLint: Para linting de código (ya incluido)
+
+2.3. REQUISITOS DEL BACKEND
+-----------------------------
+El backend está implementado en la carpeta server/ y requiere:
+- Node.js 16.x o superior
+- MongoDB Atlas (cuenta y cluster configurado) o MongoDB local
+- Variables de entorno configuradas (.env)
+
+Backend Incluido:
+- Express.js 4.18.2: Framework web
+- MongoDB con Mongoose 8.0.3: Base de datos y ODM
+- JWT 9.0.2: Autenticación
+- bcryptjs 2.4.3: Encriptación de contraseñas
+- CORS 2.8.5: Cross-Origin Resource Sharing
+- dotenv 16.3.1: Variables de entorno
+
+URL Base del API:
+- Desarrollo: http://localhost:5000/api
+- Producción: Configurable mediante variable de entorno VITE_API_URL
+
+================================================================================
+3. INSTALACIÓN Y CONFIGURACIÓN
+================================================================================
+
+3.1. INSTALACIÓN INICIAL
+-------------------------
+
+Paso 1: Clonar o descargar el proyecto
+---------------------------------------
+Si el proyecto está en un repositorio Git:
+  git clone <url-del-repositorio>
+  cd torneos
+
+Si es una descarga directa, extraer el archivo y navegar a la carpeta.
+
+Paso 2: Instalar dependencias
+------------------------------
+  npm install
+
+Este comando instalará todas las dependencias listadas en package.json:
+- React y React DOM
+- React Router DOM
+- Vite y plugins
+- Tailwind CSS
+- Axios
+- Lucide React
+- ESLint y plugins
+
+Paso 3: Instalar dependencias del backend
+------------------------------------------
+  cd server
+  npm install
+
+Paso 4: Configurar backend
+---------------------------
+1. Copiar archivo de ejemplo de variables de entorno:
+   cd server
+   cp env.example .env
+
+2. Editar .env y configurar:
+   - MONGODB_URI: Cadena de conexión de MongoDB Atlas
+   - JWT_SECRET: Clave secreta para JWT (cambiar por una segura)
+   - PORT: Puerto del servidor (por defecto 5000)
+
+Paso 5: Iniciar backend
+------------------------
+  cd server
+  npm run dev
+
+El servidor debería iniciar en http://localhost:5000
+
+Paso 6: Verificar instalación del frontend
+-------------------------------------------
+En otra terminal, desde la raíz del proyecto:
+  npm run dev
+
+Si todo está correcto, deberías ver:
+  VITE v7.x.x  ready in xxx ms
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+
+NOTA: El frontend y backend deben estar corriendo simultáneamente para que
+la aplicación funcione correctamente.
+
+3.2. CONFIGURACIÓN DEL ENTORNO
+-------------------------------
+
+Variables de Entorno - Frontend
+---------------------------------
+Crear archivo .env en la raíz del proyecto:
+
+  VITE_API_URL=http://localhost:5000/api
+
+Para producción, crear .env.production:
+  VITE_API_URL=https://api.torneos.com/api
+
+El archivo .env debe estar en .gitignore para no subir credenciales.
+
+Variables de Entorno - Backend
+-------------------------------
+Crear archivo .env en la carpeta server/:
+
+  PORT=5000
+  MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/torneos?retryWrites=true&w=majority
+  JWT_SECRET=tu_clave_secreta_super_segura_aqui
+  JWT_EXPIRE=7d
+
+IMPORTANTE:
+- MONGODB_URI: Obtener de MongoDB Atlas (Dashboard → Connect → Connection String)
+- JWT_SECRET: Usar una clave segura y aleatoria en producción
+- No versionar el archivo .env (debe estar en .gitignore)
+
+Configuración de Vite
+---------------------
+Archivo: vite.config.js
+- Plugins: React y Tailwind CSS
+- Configuración por defecto de Vite es suficiente para desarrollo
+
+Configuración de Tailwind CSS
+------------------------------
+Archivo: src/index.css
+- Importa Tailwind CSS con @import "tailwindcss"
+- Define colores personalizados en @theme:
+  * --color-primary: #075056
+  * --color-secondary: #D08DD8
+  * --color-tertiary: #2B160E
+
+Configuración de ESLint
+-----------------------
+Archivo: eslint.config.js
+- Configuración flat config (ESLint 9+)
+- Reglas para React Hooks
+- Reglas para React Refresh (HMR)
+- Ignora variables que empiezan con mayúscula o guión bajo
+
+3.3. ESTRUCTURA DE CARPETAS DESPUÉS DE INSTALACIÓN
+---------------------------------------------------
+
+torneos/
+├── node_modules/          # Dependencias del frontend (no versionar)
+├── public/                # Archivos estáticos públicos
+├── src/                   # Código fuente del frontend
+│   ├── assets/            # Recursos (imágenes, etc.)
+│   ├── components/        # Componentes reutilizables
+│   ├── page/              # Páginas/Vistas
+│   ├── services/          # Servicios de API
+│   ├── index.css          # Estilos globales
+│   └── main.jsx           # Punto de entrada
+├── server/                # Backend del proyecto
+│   ├── config/            # Configuración
+│   │   ├── config.js      # Configuración general
+│   │   └── database.js    # Conexión a MongoDB
+│   ├── controllers/       # Controladores (lógica de negocio)
+│   │   ├── authController.js
+│   │   ├── torneoController.js
+│   │   ├── atletaController.js
+│   │   ├── inscripcionController.js
+│   │   ├── tiempoController.js
+│   │   ├── resultadoController.js
+│   │   └── eventoController.js
+│   ├── middleware/        # Middleware
+│   │   ├── auth.js        # Autenticación JWT
+│   │   └── errorHandler.js # Manejo de errores
+│   ├── models/            # Modelos de Mongoose
+│   │   ├── Usuario.js
+│   │   ├── Torneo.js
+│   │   ├── Categoria.js
+│   │   ├── Evento.js
+│   │   ├── Atleta.js
+│   │   ├── Inscripcion.js
+│   │   ├── Tiempo.js
+│   │   └── Resultado.js
+│   ├── routes/            # Rutas de la API
+│   │   ├── authRoutes.js
+│   │   ├── torneoRoutes.js
+│   │   ├── atletaRoutes.js
+│   │   ├── inscripcionRoutes.js
+│   │   ├── tiempoRoutes.js
+│   │   ├── resultadoRoutes.js
+│   │   └── eventoRoutes.js
+│   ├── node_modules/      # Dependencias del backend (no versionar)
+│   ├── server.js          # Archivo principal del servidor
+│   ├── package.json       # Dependencias del backend
+│   ├── package-lock.json  # Lock file del backend
+│   ├── env.example        # Ejemplo de variables de entorno
+│   └── README.md          # Documentación del backend
+├── .gitignore             # Archivos ignorados por Git
+├── eslint.config.js       # Configuración ESLint
+├── index.html             # HTML principal
+├── package.json           # Dependencias y scripts del frontend
+├── package-lock.json      # Lock file del frontend
+└── vite.config.js         # Configuración Vite
+
+================================================================================
+4. ARQUITECTURA TÉCNICA
+================================================================================
+
+4.1. ARQUITECTURA GENERAL
+-------------------------
+El proyecto sigue una arquitectura Full-Stack con separación clara de capas:
+
+FRONTEND (SPA - Single Page Application)
+- React 19.2.0 con Vite
+- Puerto de desarrollo: 5173
+- Separación en capas: Presentation → Service → API
+
+BACKEND (REST API)
+- Node.js con Express.js 4.18.2
+- Puerto: 5000
+- Arquitectura MVC: Routes → Controllers → Models → Database
+- MongoDB con Mongoose 8.0.3
+
+┌─────────────────────────────────────────────────────────────┐
+│                    CAPA DE PRESENTACIÓN                      │
+│  React Components (Pages, Layout, UI Components)            │
+│  - Manejo de estado local con useState                       │
+│  - Efectos secundarios con useEffect                          │
+│  - Navegación con React Router                               │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+│                    CAPA DE SERVICIOS                         │
+│  Service Layer (authService, torneoService, etc.)           │
+│  - Encapsula lógica de comunicación con API                 │
+│  - Manejo de transformación de datos                         │
+│  - Abstracción de endpoints                                  │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+│                    CAPA DE COMUNICACIÓN                      │
+│  API Layer (Axios Configuration)                            │
+│  - Configuración base de Axios                               │
+│  - Interceptores de request/response                         │
+│  - Manejo de autenticación                                   │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+│                    BACKEND API                               │
+│  REST API (Endpoints HTTP)                                  │
+│  - Autenticación JWT                                        │
+│  - CRUD de entidades                                         │
+└──────────────────────────────────────────────────────────────┘
+
+4.2. PATRÓN DE DISEÑO: COMPONENT-BASED ARCHITECTURE
+----------------------------------------------------
+- Componentes funcionales (no clases)
+- Hooks de React para estado y efectos
+- Props para comunicación padre-hijo
+- Composición sobre herencia
+- Separación de lógica de presentación
+
+4.3. PATRÓN DE DISEÑO: SERVICE LAYER
+-------------------------------------
+Cada entidad tiene su propio servicio que encapsula:
+- Llamadas al API
+- Transformación de datos
+- Manejo de errores específicos
+- Validaciones básicas
+
+Ejemplo de estructura de servicio:
+  export const torneoService = {
+    getAll: async () => { ... },
+    getById: async (id) => { ... },
+    create: async (data) => { ... },
+    update: async (id, data) => { ... },
+    delete: async (id) => { ... }
+  };
+
+4.4. GESTIÓN DE ESTADO
+-----------------------
+Estado Local (useState):
+- Estado de componentes individuales
+- Formularios
+- UI state (modales, loading, etc.)
+
+Estado Persistente (localStorage):
+- Token de autenticación
+- Datos de usuario
+- Preferencias (futuro)
+
+Estado Global (futuro):
+- Context API para estado compartido
+- Redux si la complejidad lo requiere
+
+4.5. RUTEO Y NAVEGACIÓN
+------------------------
+React Router DOM v7:
+- Rutas declarativas en main.jsx
+- Rutas protegidas con ProtectedRoute
+- Rutas anidadas para mejor organización
+- Navegación programática con useNavigate
+- Parámetros dinámicos con useParams
+
+Estructura de rutas:
+  /login                    → Login (pública)
+  /                         → Redirect a /dashboard
+  /dashboard                → Dashboard (protegida)
+  /torneos                  → Lista de torneos (protegida)
+  /torneos/:id              → Detalle de torneo (protegida)
+  /inscripciones            → Gestión de inscripciones (protegida)
+  /tiempos                  → Registro de tiempos (protegida)
+  /resultados               → Resultados (protegida)
+
+4.6. SEGURIDAD
+--------------
+Autenticación:
+- JWT tokens almacenados en localStorage
+- Interceptores de Axios agregan token automáticamente
+- Rutas protegidas verifican token antes de renderizar
+
+Autorización:
+- Componente ProtectedRoute verifica autenticación
+- Redirección automática a /login si no hay token
+- Manejo de errores 401 para cerrar sesión automáticamente
+
+Validación:
+- Validación de formularios en frontend
+- Validación de tipos de datos
+- Sanitización de inputs (futuro: librerías especializadas)
+
+================================================================================
+5. ESTRUCTURA DEL CÓDIGO
+================================================================================
+
+5.1. PUNTO DE ENTRADA: main.jsx
+---------------------------------
+Archivo: src/main.jsx
+
+Responsabilidades:
+- Renderiza la aplicación React en el DOM
+- Configura React Router
+- Define todas las rutas de la aplicación
+- Envuelve rutas protegidas con ProtectedRoute
+
+Estructura:
+  import { StrictMode } from 'react'
+  import { createRoot } from 'react-dom/client'
+  import { BrowserRouter, Routes, Route } from 'react-router-dom'
+  import Layout from './components/Layout'
+  import ProtectedRoute from './components/ProtectedRoute'
+  // ... imports de páginas
+
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/dashboard" />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            // ... más rutas
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </StrictMode>
+  )
+
+5.2. COMPONENTES DE LAYOUT
+---------------------------
+
+Layout.jsx
+----------
+Archivo: src/components/Layout.jsx
+
+Propósito: Layout principal que envuelve todas las páginas protegidas
+
+Estructura:
+- Sidebar: Navegación lateral
+- Header: Encabezado superior
+- Outlet: Renderiza el componente de la ruta actual
+
+Estado:
+- sidebarOpen: Controla visibilidad del sidebar
+
+Props: Ninguna (usa Outlet de React Router)
+
+Sidebar.jsx
+-----------
+Archivo: src/components/Sidebar.jsx
+
+Propósito: Barra lateral de navegación
+
+Props:
+- isOpen: boolean - Controla si el sidebar está expandido
+- onToggle: function - Función para alternar visibilidad
+
+Funcionalidades:
+- Menú de navegación con iconos
+- Resaltado de ruta activa
+- Información del usuario
+- Botón de logout
+- Responsive (se oculta en móvil)
+
+Header.jsx
+----------
+Archivo: src/components/Header.jsx
+
+Propósito: Encabezado superior de la aplicación
+
+Props:
+- onMenuClick: function - Función para abrir/cerrar sidebar en móvil
+
+Funcionalidades:
+- Botón de menú hamburguesa (solo en móvil)
+- Título de la aplicación
+
+ProtectedRoute.jsx
+------------------
+Archivo: src/components/ProtectedRoute.jsx
+
+Propósito: Componente de orden superior para proteger rutas
+
+Props:
+- children: ReactNode - Componentes hijos a proteger
+
+Lógica:
+1. Obtiene token de localStorage
+2. Obtiene usuario de localStorage
+3. Si no hay token o usuario → redirige a /login
+4. Si hay autenticación → renderiza children
+
+5.3. PÁGINAS/VISTAS
+--------------------
+
+Dashboard.jsx
+-------------
+Archivo: src/page/Dashboard.jsx
+
+Propósito: Página principal con estadísticas generales
+
+Funcionalidades:
+- Muestra estadísticas (torneos, atletas, inscripciones, resultados)
+- Carga datos de múltiples servicios
+- Muestra indicadores visuales con iconos
+- Manejo de estados de carga
+
+Estado:
+- stats: objeto con estadísticas
+- loading: boolean para estado de carga
+
+Login.jsx
+---------
+Archivo: src/page/Login.jsx
+
+Propósito: Página de autenticación
+
+Funcionalidades:
+- Formulario de login (email, password)
+- Validación de campos
+- Manejo de errores
+- Redirección después de login exitoso
+- Estado de carga durante autenticación
+
+Estado:
+- formData: objeto con email y password
+- error: string con mensaje de error
+- loading: boolean para estado de carga
+
+Torneos.jsx
+-----------
+Archivo: src/page/Torneos.jsx
+
+Propósito: Gestión de torneos (listado y creación)
+
+Funcionalidades:
+- Listado de torneos en grid responsive
+- Formulario de creación de torneo
+- Gestión dinámica de categorías y eventos
+- Navegación a detalle de torneo
+- Manejo de estados de carga y error
+
+Estado:
+- torneos: array de torneos
+- loading: boolean
+- showForm: boolean para mostrar/ocultar formulario
+- formData: objeto con datos del formulario
+- categorias: array de categorías
+- eventos: array de eventos
+
+TorneoDetalle.jsx
+-----------------
+Archivo: src/page/TorneoDetalle.jsx
+
+Propósito: Vista detallada de un torneo específico
+
+Funcionalidades:
+- Muestra información completa del torneo
+- Lista categorías y eventos
+- Navegación desde lista de torneos
+- Uso de parámetros de ruta (useParams)
+
+Inscripciones.jsx
+-----------------
+Archivo: src/page/Inscripciones.jsx
+
+Propósito: Gestión de inscripciones de atletas
+
+Funcionalidades:
+- Listado de inscripciones
+- Formulario de inscripción
+- Validación de requisitos de categoría
+- Asignación de números de competidor
+
+Tiempos.jsx
+-----------
+Archivo: src/page/Tiempos.jsx
+
+Propósito: Registro de tiempos de competencias
+
+Funcionalidades:
+- Formulario de registro de tiempos
+- Cálculo automático de posiciones
+- Asignación de puntos
+- Listado de tiempos por evento
+- Edición y descalificación de tiempos
+
+Resultados.jsx
+--------------
+Archivo: src/page/Resultados.jsx
+
+Propósito: Visualización de resultados y clasificaciones
+
+Funcionalidades:
+- Generación automática de resultados
+- Clasificación por puntos totales
+- Visualización de mejor tiempo
+- Estadísticas de participación
+
+5.4. SERVICIOS
+--------------
+
+api.js
+-------
+Archivo: src/services/api.js
+
+Propósito: Configuración base de Axios
+
+Funcionalidades:
+- Crea instancia de Axios con baseURL configurable
+- Interceptor de request: Agrega token JWT automáticamente
+- Interceptor de response: Maneja errores 401 (no autorizado)
+- Redirección automática a login si token expira
+
+Configuración:
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+authService.js
+--------------
+Archivo: src/services/authService.js
+
+Propósito: Servicio de autenticación
+
+Métodos:
+- login(credentials): Autentica usuario y obtiene token
+- register(userData): Registra nuevo usuario
+- logout(): Limpia token y datos de usuario
+- getCurrentUser(): Obtiene usuario actual de localStorage
+- setAuth(token, user): Almacena token y usuario
+
+Uso:
+  import { authService } from '../services/authService';
+  const response = await authService.login({ email, password });
+  authService.setAuth(response.data.token, response.data.user);
+
+torneoService.js
+----------------
+Archivo: src/services/torneoService.js
+
+Propósito: Servicio para gestión de torneos
+
+Métodos:
+- getAll(): Obtiene lista de todos los torneos
+- getById(id): Obtiene detalle de un torneo
+- create(data): Crea nuevo torneo
+- update(id, data): Actualiza torneo existente
+- delete(id): Elimina torneo
+
+Nota: Actualmente usa datos mock. Para conectar con backend real,
+descomentar las líneas que usan api y comentar las funciones mock.
+
+atletaService.js
+-----------------
+Archivo: src/services/atletaService.js
+
+Propósito: Servicio para gestión de atletas
+
+Métodos:
+- getAll(): Lista todos los atletas
+- getById(id): Obtiene atleta por ID
+- create(data): Crea nuevo atleta
+- update(id, data): Actualiza atleta
+- delete(id): Elimina atleta
+- inscribir(torneoId, categoriaId, atletaData): Inscribe atleta
+- getInscripciones(torneoId): Obtiene inscripciones de un torneo
+- getInscripcionesByCategoria(torneoId, categoriaId): Filtra por categoría
+
+tiempoService.js
+----------------
+Archivo: src/services/tiempoService.js
+
+Propósito: Servicio para registro de tiempos
+
+Métodos:
+- registrar(torneoId, categoriaId, tiempoData): Registra nuevo tiempo
+- update(torneoId, categoriaId, tiempoId, tiempoData): Actualiza tiempo
+- delete(torneoId, categoriaId, tiempoId): Elimina tiempo
+- getByCategoria(torneoId, categoriaId): Obtiene tiempos de una categoría
+
+resultadoService.js
+-------------------
+Archivo: src/services/resultadoService.js
+
+Propósito: Servicio para gestión de resultados
+
+Métodos:
+- getResultados(torneoId): Obtiene resultados de un torneo
+- getResultadosByCategoria(torneoId, categoriaId): Filtra por categoría
+- generarClasificacion(torneoId, categoriaId): Genera clasificación final
+
+5.5. ESTILOS
+-------------
+
+index.css
+----------
+Archivo: src/index.css
+
+Propósito: Estilos globales y configuración de Tailwind
+
+Contenido:
+- @import "tailwindcss": Importa Tailwind CSS
+- @theme: Define colores personalizados
+  * primary: #075056 (verde azulado oscuro)
+  * secondary: #D08DD8 (morado claro)
+  * tertiary: #2B160E (marrón oscuro)
+
+Uso de Tailwind:
+- Clases utility-first
+- Responsive: md:, lg: para breakpoints
+- Estados: hover:, focus:, disabled:
+- Espaciado: p-, m-, gap-
+- Colores: bg-primary, text-primary, border-primary
+
+================================================================================
+6. PATRONES DE DISEÑO Y MEJORES PRÁCTICAS
+================================================================================
+
+6.1. COMPONENTES FUNCIONALES
+------------------------------
+Todos los componentes usan funciones, no clases:
+
+  function ComponentName() {
+    // lógica del componente
+    return <div>...</div>;
+  }
+
+Ventajas:
+- Más simple y legible
+- Mejor soporte de hooks
+- Mejor optimización por React
+
+6.2. HOOKS DE REACT
+--------------------
+
+useState
+--------
+Para estado local del componente:
+  const [value, setValue] = useState(initialValue);
+
+Ejemplo:
+  const [loading, setLoading] = useState(false);
+  const [torneos, setTorneos] = useState([]);
+
+useEffect
+---------
+Para efectos secundarios (llamadas API, suscripciones, etc.):
+  useEffect(() => {
+    // efecto
+    return () => {
+      // cleanup (opcional)
+    };
+  }, [dependencies]);
+
+Ejemplo:
+  useEffect(() => {
+    fetchTorneos();
+  }, []); // Solo se ejecuta al montar
+
+useNavigate
+-----------
+Para navegación programática:
+  const navigate = useNavigate();
+  navigate('/dashboard');
+
+useParams
+---------
+Para obtener parámetros de ruta:
+  const { id } = useParams();
+  // Si la ruta es /torneos/:id, id contiene el valor
+
+useLocation
+-----------
+Para obtener información de la ruta actual:
+  const location = useLocation();
+  // location.pathname contiene la ruta actual
+
+6.3. MANEJO DE ESTADOS ASÍNCRONOS
+-----------------------------------
+
+Patrón de Loading State
+-------------------------
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await service.getData();
+        setData(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage error={error} />;
+  return <DataComponent data={data} />;
+
+6.4. MANEJO DE FORMULARIOS
+---------------------------
+
+Estado Controlado
+------------------
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+  });
+
+  <input
+    value={formData.nombre}
+    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+  />
+
+Validación
+----------
+- Validación HTML5 con atributos required, type, etc.
+- Validación en submit:
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.nombre || !formData.email) {
+      setError('Todos los campos son requeridos');
+      return;
+    }
+    // enviar datos
+  };
+
+6.5. MANEJO DE ERRORES
+-----------------------
+
+Try-Catch en Async Functions
+-----------------------------
+  try {
+    const response = await service.getData();
+    // manejar éxito
+  } catch (error) {
+    console.error('Error:', error);
+    setError('Ocurrió un error al cargar los datos');
+  }
+
+Manejo de Errores de API
+-------------------------
+Los interceptores de Axios manejan errores globales:
+- 401: Redirige a login
+- Otros: Se propagan al componente para manejo específico
+
+6.6. OPTIMIZACIÓN
+------------------
+
+Lazy Loading (Futuro)
+---------------------
+Para cargar componentes solo cuando se necesiten:
+  const Dashboard = lazy(() => import('./page/Dashboard'));
+
+  <Suspense fallback={<Loader />}>
+    <Dashboard />
+  </Suspense>
+
+Memoización (Futuro)
+--------------------
+Para evitar re-renders innecesarios:
+  const MemoizedComponent = memo(Component);
+
+6.7. CONVENCIONES DE CÓDIGO
+----------------------------
+
+Nomenclatura
+------------
+- Componentes: PascalCase (Dashboard.jsx, TorneoDetalle.jsx)
+- Funciones: camelCase (fetchTorneos, handleSubmit)
+- Constantes: UPPER_SNAKE_CASE (API_URL) o camelCase (baseURL)
+- Variables: camelCase (torneos, loading, formData)
+- Archivos: PascalCase para componentes, camelCase para servicios
+
+Estructura de Componentes
+--------------------------
+1. Imports (React, librerías, componentes locales, servicios)
+2. Definición del componente
+3. Estado (useState)
+4. Efectos (useEffect)
+5. Funciones auxiliares
+6. Render (return)
+7. Export
+
+Ejemplo:
+  import { useState, useEffect } from 'react';
+  import { service } from '../services/service';
+
+  function Component() {
+    const [state, setState] = useState(null);
+    
+    useEffect(() => {
+      // efecto
+    }, []);
+    
+    const handleAction = () => {
+      // lógica
+    };
+    
+    return <div>...</div>;
+  }
+  
+  export default Component;
+
+Comentarios
+-----------
+- Comentar código complejo o no obvio
+- Documentar funciones complejas
+- Evitar comentarios obvios
+- Usar comentarios JSDoc para funciones públicas (futuro)
+
+================================================================================
+7. CONFIGURACIÓN DE HERRAMIENTAS
+================================================================================
+
+7.1. VITE
+----------
+
+Configuración: vite.config.js
+-----------------------------
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react'
+  import tailwindcss from '@tailwindcss/vite'
+
+  export default defineConfig({
+    plugins: [react(), tailwindcss()],
+  })
+
+Scripts Disponibles
+-------------------
+- npm run dev: Inicia servidor de desarrollo (puerto 5173)
+- npm run build: Crea build de producción
+- npm run preview: Previsualiza build de producción
+- npm run lint: Ejecuta ESLint
+
+Características
+---------------
+- Hot Module Replacement (HMR): Recarga automática sin perder estado
+- Fast Refresh: Recarga rápida de componentes React
+- Optimización automática para producción
+- Soporte nativo para ES modules
+
+7.2. TAILWIND CSS
+------------------
+
+Configuración: src/index.css
+-----------------------------
+  @import "tailwindcss";
+
+  @theme {
+    --color-primary: #075056;
+    --color-secondary: #D08DD8;
+    --color-tertiary: #2B160E;
+  }
+
+Uso
+---
+Clases utility-first:
+  <div className="bg-primary text-white p-4 rounded-lg">
+    Contenido
+  </div>
+
+Responsive
+----------
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    {/* 1 columna en móvil, 2 en tablet, 3 en desktop */}
+  </div>
+
+Estados
+-------
+  <button className="bg-primary hover:bg-primary/90 disabled:opacity-50">
+    Botón
+  </button>
+
+7.3. ESLINT
+-----------
+
+Configuración: eslint.config.js
+--------------------------------
+- Flat config (ESLint 9+)
+- Reglas recomendadas de JavaScript
+- Reglas de React Hooks
+- Reglas de React Refresh para Vite
+- Ignora variables que empiezan con mayúscula o guión bajo
+
+Ejecución
+---------
+  npm run lint
+
+Integración con Editor
+----------------------
+- VS Code: Instalar extensión ESLint
+- Cursor: Soporte nativo
+- Muestra errores en tiempo real
+- Auto-fix disponible
+
+7.4. GIT
+---------
+
+.gitignore
+----------
+Incluye:
+- node_modules/
+- dist/
+- .env
+- .env.local
+- .env.production
+- Archivos de sistema (DS_Store, Thumbs.db, etc.)
+
+Buenas Prácticas
+----------------
+- Commits descriptivos
+- Branch por feature
+- No commitear node_modules
+- No commitear archivos .env con credenciales
+
+================================================================================
+8. INTEGRACIÓN CON BACKEND
+================================================================================
+
+8.1. CONFIGURACIÓN DE API
+--------------------------
+
+Variable de Entorno
+--------------------
+Crear .env en la raíz del proyecto:
+  VITE_API_URL=http://localhost:5000/api
+
+Uso en código:
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  });
+
+NOTA: El backend debe estar corriendo en el puerto 5000 para que el frontend
+pueda conectarse correctamente.
+
+8.2. ESTRUCTURA DE RESPUESTAS ESPERADAS
+----------------------------------------
+
+Respuesta Exitosa
+------------------
+  {
+    data: {
+      // datos de la entidad
+    }
+  }
+
+Respuesta de Lista
+------------------
+  {
+    data: [
+      { id: 1, ... },
+      { id: 2, ... }
+    ]
+  }
+
+Respuesta de Error
+-------------------
+  {
+    error: {
+      message: "Mensaje de error",
+      code: "ERROR_CODE"
+    }
+  }
+
+Códigos de Estado HTTP
+----------------------
+- 200: Éxito
+- 201: Creado exitosamente
+- 400: Error de validación
+- 401: No autorizado (token inválido o expirado)
+- 403: Prohibido (sin permisos)
+- 404: No encontrado
+- 500: Error del servidor
+
+8.3. ENDPOINTS DEL BACKEND
+---------------------------
+
+El backend está implementado y proporciona los siguientes endpoints:
+
+Autenticación
+-------------
+POST /api/auth/register
+  Body: { email, password, nombre, apellido, rol }
+  Response: { token: string, user: object }
+  Sin autenticación requerida
+
+POST /api/auth/login
+  Body: { email: string, password: string }
+  Response: { token: string, user: object }
+  Sin autenticación requerida
+
+GET /api/auth/me
+  Response: { user: object }
+  Requiere autenticación (header: Authorization: Bearer <token>)
+
+Health Check
+------------
+GET /api/health
+  Response: { message: string, status: 'OK' }
+  Sin autenticación requerida
+
+Torneos
+-------
+GET    /api/torneos              → Lista todos (requiere auth)
+GET    /api/torneos/:id          → Obtiene uno (requiere auth)
+POST   /api/torneos               → Crea nuevo (requiere auth)
+PUT    /api/torneos/:id          → Actualiza (requiere auth)
+DELETE /api/torneos/:id          → Elimina (requiere auth)
+
+Categorías (de un torneo)
+--------------------------
+GET    /api/torneos/:id/categorias              → Lista categorías
+POST   /api/torneos/:id/categorias              → Crea categoría
+PUT    /api/torneos/:id/categorias/:catId       → Actualiza categoría
+DELETE /api/torneos/:id/categorias/:catId       → Elimina categoría
+
+Eventos (de un torneo)
+-----------------------
+GET    /api/torneos/:id/eventos                 → Lista eventos
+POST   /api/torneos/:id/eventos                 → Crea evento
+PUT    /api/torneos/:id/eventos/:eventoId       → Actualiza evento
+DELETE /api/torneos/:id/eventos/:eventoId       → Elimina evento
+
+Atletas
+-------
+GET    /api/atletas               → Lista todos (requiere auth)
+GET    /api/atletas/:id           → Obtiene uno (requiere auth)
+POST   /api/atletas               → Crea nuevo (requiere auth)
+PUT    /api/atletas/:id          → Actualiza (requiere auth)
+DELETE /api/atletas/:id          → Elimina (requiere auth)
+
+Inscripciones
+-------------
+GET    /api/torneos/:id/inscripciones                                    → Lista inscripciones
+GET    /api/torneos/:id/categorias/:catId/inscripciones                  → Lista por categoría
+POST   /api/torneos/:id/categorias/:catId/inscripciones                  → Crea inscripción
+
+Tiempos
+-------
+GET    /api/torneos/:id/categorias/:catId/tiempos                        → Lista tiempos
+POST   /api/torneos/:id/categorias/:catId/tiempos                        → Registra tiempo
+PUT    /api/torneos/:id/categorias/:catId/tiempos/:tiempoId               → Actualiza tiempo
+DELETE /api/torneos/:id/categorias/:catId/tiempos/:tiempoId               → Elimina tiempo
+
+Resultados
+----------
+GET    /api/torneos/:id/resultados                                        → Resultados del torneo
+GET    /api/torneos/:id/categorias/:catId/resultados                      → Resultados por categoría
+POST   /api/torneos/:id/categorias/:catId/clasificacion                    → Genera clasificación
+
+NOTA: Todos los endpoints (excepto /api/auth/login, /api/auth/register y /api/health)
+requieren autenticación mediante header: Authorization: Bearer <token>
+
+8.4. AUTENTICACIÓN JWT
+-----------------------
+
+Flujo
+-----
+1. Usuario hace login
+2. Backend valida credenciales
+3. Backend retorna JWT token
+4. Frontend almacena token en localStorage
+5. Frontend incluye token en header Authorization de todas las peticiones
+6. Backend valida token en cada petición
+7. Si token expira (401), frontend redirige a login
+
+Header de Autorización
+----------------------
+  Authorization: Bearer <token>
+
+Implementación en Axios
+------------------------
+Interceptor agrega token automáticamente:
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+8.5. MANEJO DE CORS
+--------------------
+El backend debe configurar CORS para permitir peticiones del frontend:
+- Origen permitido: http://localhost:5173 (desarrollo)
+- Métodos permitidos: GET, POST, PUT, DELETE, OPTIONS
+- Headers permitidos: Content-Type, Authorization
+
+================================================================================
+9. DESARROLLO DEL BACKEND
+================================================================================
+
+9.1. INICIAR EL BACKEND
+------------------------
+
+Desde la carpeta server/:
+  cd server
+  npm install          # Solo la primera vez
+  npm run dev          # Modo desarrollo (con recarga automática)
+  # o
+  npm start            # Modo producción
+
+El servidor iniciará en http://localhost:5000
+
+Verificar que funciona:
+  curl http://localhost:5000/api/health
+  # Debería retornar: {"message":"API funcionando correctamente","status":"OK"}
+
+9.2. ESTRUCTURA DE ARCHIVOS DEL BACKEND
+----------------------------------------
+
+server.js
+---------
+Archivo principal que:
+- Importa y configura Express
+- Conecta a MongoDB
+- Configura middleware (CORS, JSON parser)
+- Define rutas
+- Inicia el servidor
+
+config/config.js
+----------------
+Carga variables de entorno:
+- PORT: Puerto del servidor
+- MONGODB_URI: Cadena de conexión
+- JWT_SECRET: Clave secreta para JWT
+- JWT_EXPIRE: Tiempo de expiración del token
+
+config/database.js
+------------------
+Función connectDB que:
+- Conecta a MongoDB usando Mongoose
+- Maneja errores de conexión
+- Muestra mensaje de éxito
+
+models/
+-------
+Cada modelo define:
+- Esquema de Mongoose
+- Validaciones
+- Hooks (pre-save, etc.)
+- Métodos personalizados
+
+Ejemplo (Usuario.js):
+- Encripta contraseña antes de guardar
+- Método matchPassword para comparar
+- Elimina password del JSON de respuesta
+
+controllers/
+------------
+Cada controlador contiene:
+- Funciones async que manejan requests
+- Validación de datos
+- Llamadas a modelos
+- Respuestas HTTP
+
+Estructura típica:
+  export const getTorneos = async (req, res, next) => {
+    try {
+      const torneos = await Torneo.find();
+      res.json({ data: torneos });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+routes/
+-------
+Define endpoints y middleware:
+  const router = express.Router();
+  router.get('/', protect, controller.getTorneos);
+  router.post('/', protect, controller.createTorneo);
+  export default router;
+
+middleware/auth.js
+-----------------
+- protect: Verifica token JWT
+- authorize: Verifica roles del usuario
+
+middleware/errorHandler.js
+---------------------------
+Captura y formatea errores:
+- Errores de validación
+- Errores de JWT
+- Errores 404
+- Errores 500
+
+9.3. CONECTAR FRONTEND CON BACKEND
+------------------------------------
+
+1. Asegurarse de que el backend está corriendo en puerto 5000
+2. Verificar variable de entorno en frontend:
+   VITE_API_URL=http://localhost:5000/api
+3. El frontend ya está configurado para usar esta URL
+4. Los servicios del frontend harán peticiones al backend real
+
+9.4. TESTING DEL BACKEND
+--------------------------
+
+Con curl o Postman:
+-------------------
+# Health check
+curl http://localhost:5000/api/health
+
+# Login
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"password123"}'
+
+# Obtener torneos (requiere token)
+curl http://localhost:5000/api/torneos \
+  -H "Authorization: Bearer <token>"
+
+9.5. LOGS Y DEBUGGING
+---------------------
+
+El backend muestra logs en consola:
+- Conexión a MongoDB
+- Puerto en el que está corriendo
+- Errores de conexión
+
+Para más logs, agregar console.log en:
+- Controladores (para ver requests)
+- Middleware (para ver autenticación)
+- Modelos (para ver operaciones de BD)
+
+================================================================================
+10. DESARROLLO Y DEBUGGING
+================================================================================
+
+9.1. HERRAMIENTAS DE DESARROLLO
+---------------------------------
+
+React DevTools
+--------------
+Extensión del navegador para:
+- Inspeccionar árbol de componentes
+- Ver props y estado
+- Profiling de rendimiento
+- Debugging de hooks
+
+Chrome DevTools
+---------------
+- Console: Para logs y debugging
+- Network: Para inspeccionar peticiones HTTP
+- Application: Para ver localStorage, cookies, etc.
+- Sources: Para debugging con breakpoints
+
+VS Code / Cursor
+----------------
+- Extensiones recomendadas:
+  * ESLint
+  * Prettier (futuro)
+  * React snippets
+  * Tailwind CSS IntelliSense
+
+9.2. DEBUGGING
+--------------
+
+Console.log
+-----------
+  console.log('Estado actual:', state);
+  console.log('Datos recibidos:', response.data);
+
+React DevTools
+--------------
+- Inspeccionar estado en tiempo real
+- Ver props pasadas a componentes
+- Modificar estado para testing
+
+Network Tab
+-----------
+- Ver todas las peticiones HTTP
+- Inspeccionar request/response
+- Verificar headers, body, status codes
+
+Breakpoints
+-----------
+En Chrome DevTools:
+1. Abrir Sources
+2. Navegar a archivo .jsx
+3. Click en número de línea para breakpoint
+4. Recargar página
+5. Debug paso a paso
+
+9.3. LOGGING
+------------
+
+Niveles de Log
+--------------
+- console.log: Información general
+- console.warn: Advertencias
+- console.error: Errores
+- console.debug: Debug detallado (solo desarrollo)
+
+Mejores Prácticas
+-----------------
+- Usar console.error para errores reales
+- Limpiar logs antes de producción
+- Considerar librería de logging para producción (futuro)
+
+9.4. TESTING (Futuro)
+---------------------
+
+Unit Tests
+-----------
+Jest + React Testing Library:
+  import { render, screen } from '@testing-library/react';
+  import Component from './Component';
+
+  test('renders component', () => {
+    render(<Component />);
+    expect(screen.getByText('Texto')).toBeInTheDocument();
+  });
+
+Integration Tests
+-----------------
+Testing de flujos completos:
+- Login → Dashboard
+- Crear torneo → Ver lista
+- Inscribir atleta → Ver inscripción
+
+E2E Tests
+---------
+Cypress o Playwright para:
+- Flujos de usuario completos
+- Testing en navegador real
+
+================================================================================
+10. BUILD Y DEPLOYMENT
+================================================================================
+
+10.1. BUILD DE PRODUCCIÓN
+---------------------------
+
+Comando
+-------
+  npm run build
+
+Proceso
+-------
+1. Vite compila y optimiza código
+2. Minifica JavaScript y CSS
+3. Tree-shaking elimina código no usado
+4. Genera archivos en carpeta dist/
+
+Output
+------
+dist/
+├── index.html
+├── assets/
+│   ├── index-[hash].js
+│   └── index-[hash].css
+└── ...
+
+10.2. OPTIMIZACIONES AUTOMÁTICAS
+----------------------------------
+
+Code Splitting
+---------------
+- Vite divide código en chunks
+- Carga lazy de rutas (si se implementa)
+- Reduce tamaño inicial del bundle
+
+Minificación
+------------
+- JavaScript minificado
+- CSS minificado
+- Nombres de variables acortados
+
+Tree Shaking
+------------
+- Elimina código no usado
+- Reduce tamaño del bundle
+
+10.3. PREVIEW LOCAL
+--------------------
+
+Comando
+-------
+  npm run preview
+
+Propósito
+---------
+- Previsualizar build de producción localmente
+- Verificar que todo funciona antes de deploy
+- Testing de performance
+
+10.4. DEPLOYMENT (Futuro)
+-------------------------
+
+Opciones de Hosting
+--------------------
+- Vercel: Optimizado para React, deploy automático
+- Netlify: Similar a Vercel, fácil configuración
+- GitHub Pages: Gratis, para proyectos estáticos
+- AWS S3 + CloudFront: Escalable, requiere más configuración
+
+Proceso General
+---------------
+1. Build de producción: npm run build
+2. Subir carpeta dist/ al hosting
+3. Configurar variables de entorno
+4. Configurar dominio (opcional)
+5. Configurar HTTPS (recomendado)
+
+CI/CD (Futuro)
+--------------
+GitHub Actions para:
+- Build automático en push
+- Tests automáticos
+- Deploy automático a producción
+
+Configuración de Variables de Entorno
+-------------------------------------
+En el hosting configurar:
+- VITE_API_URL: URL del backend en producción
+
+================================================================================
+11. TROUBLESHOOTING
+================================================================================
+
+11.1. PROBLEMAS COMUNES
+------------------------
+
+Error: Cannot find module
+---------------------------
+Solución:
+  npm install
+
+Error: Port already in use
+---------------------------
+Solución:
+  - Cerrar otro proceso usando el puerto
+  - Cambiar puerto en vite.config.js:
+    server: { port: 3001 }
+
+Error: Module not found
+------------------------
+Solución:
+  - Verificar que el import path es correcto
+  - Verificar que el archivo existe
+  - Verificar extensión del archivo (.jsx vs .js)
+
+Error: CORS
+-----------
+Solución:
+  - Verificar que backend permite origen del frontend
+  - Verificar headers CORS en backend
+  - En desarrollo, usar proxy en Vite (futuro)
+
+Error: 401 Unauthorized
+------------------------
+Solución:
+  - Verificar que token existe en localStorage
+  - Verificar que token no expiró
+  - Hacer login nuevamente
+
+Error: Network Error
+--------------------
+Solución:
+  - Verificar que backend está corriendo (puerto 5000)
+  - Verificar URL del API en .env (http://localhost:5000/api)
+  - Verificar conexión a internet
+  - Verificar firewall
+  - Verificar que MongoDB está conectado
+
+Error: MongoDB Connection Failed
+--------------------------------
+Solución:
+  - Verificar MONGODB_URI en .env del backend
+  - Verificar que la cadena de conexión es correcta
+  - Verificar que MongoDB Atlas permite conexiones desde tu IP
+  - Verificar credenciales de MongoDB
+  - Verificar que el cluster está activo
+
+Error: JWT Secret Missing
+--------------------------
+Solución:
+  - Verificar que JWT_SECRET está en .env del backend
+  - Usar una clave secreta segura
+  - No usar la clave por defecto en producción
+
+Error: Port 5000 Already in Use
+--------------------------------
+Solución:
+  - Cerrar otro proceso usando el puerto 5000
+  - Cambiar puerto en .env: PORT=5001
+  - Actualizar VITE_API_URL en frontend si cambias el puerto
+
+11.2. DEBUGGING DE RENDERING
+-----------------------------
+
+Componente no se renderiza
+---------------------------
+- Verificar que está importado correctamente
+- Verificar que está en las rutas
+- Verificar console para errores
+- Verificar React DevTools
+
+Estado no se actualiza
+----------------------
+- Verificar que se usa setState correctamente
+- Verificar dependencias de useEffect
+- Verificar que no hay errores silenciosos
+
+Props no se pasan
+------------------
+- Verificar nombres de props
+- Verificar que componente padre pasa props
+- Verificar React DevTools
+
+11.3. PROBLEMAS DE ESTILOS
+---------------------------
+
+Estilos no se aplican
+----------------------
+- Verificar que Tailwind está importado en index.css
+- Verificar que clases están escritas correctamente
+- Verificar que no hay conflictos de CSS
+- Verificar DevTools para ver estilos aplicados
+
+Responsive no funciona
+----------------------
+- Verificar breakpoints de Tailwind (md:, lg:)
+- Verificar viewport meta tag en index.html
+- Verificar que se usa grid/flex correctamente
+
+11.4. PROBLEMAS DE PERFORMANCE
+-------------------------------
+
+Aplicación lenta
+----------------
+- Verificar cantidad de re-renders (React DevTools Profiler)
+- Verificar tamaño del bundle
+- Verificar llamadas API innecesarias
+- Considerar memoización (futuro)
+
+Carga lenta inicial
+-------------------
+- Verificar tamaño del bundle
+- Considerar code splitting
+- Verificar imágenes optimizadas
+- Verificar lazy loading (futuro)
+
+11.5. PROBLEMAS DE AUTENTICACIÓN
+----------------------------------
+
+Token no se guarda
+-------------------
+- Verificar localStorage disponible
+- Verificar que authService.setAuth se llama
+- Verificar que no hay errores en consola
+
+Redirección infinita
+--------------------
+- Verificar lógica de ProtectedRoute
+- Verificar que token se valida correctamente
+- Verificar que no hay loops en useEffect
+
+11.6. CONTACTO Y SOPORTE
+-------------------------
+Para problemas técnicos:
+1. Revisar este manual
+2. Revisar documentación de React, Vite, Tailwind
+3. Buscar en Stack Overflow
+4. Revisar issues en GitHub (si aplica)
+
+================================================================================
+12. EXTENSIÓN Y MANTENIMIENTO
+================================================================================
+
+12.1. AGREGAR NUEVA FUNCIONALIDAD
+----------------------------------
+
+Paso 1: Crear Servicio
+-----------------------
+1. Crear archivo en src/services/nuevoService.js
+2. Implementar métodos CRUD
+3. Seguir patrón de servicios existentes
+
+Paso 2: Crear Página
+---------------------
+1. Crear archivo en src/page/NuevaPagina.jsx
+2. Implementar componente con estado y efectos
+3. Usar servicio creado
+
+Paso 3: Agregar Ruta
+---------------------
+1. Importar componente en main.jsx
+2. Agregar Route en Routes
+3. Agregar link en Sidebar si es necesario
+
+Paso 4: Probar
+--------------
+1. Verificar que carga correctamente
+2. Verificar que servicios funcionan
+3. Verificar responsive
+4. Verificar manejo de errores
+
+12.2. AGREGAR NUEVO COMPONENTE REUTILIZABLE
+-------------------------------------------
+
+Paso 1: Crear Componente
+-------------------------
+1. Crear archivo en src/components/NuevoComponente.jsx
+2. Definir props necesarias
+3. Implementar lógica y render
+
+Paso 2: Documentar
+------------------
+1. Comentar propósito del componente
+2. Documentar props con JSDoc (futuro)
+3. Agregar ejemplos de uso (futuro)
+
+Paso 3: Usar
+------------
+1. Importar donde se necesite
+2. Pasar props necesarias
+3. Probar en diferentes contextos
+
+12.3. ACTUALIZAR DEPENDENCIAS
+------------------------------
+
+Verificar Actualizaciones
+-------------------------
+  npm outdated
+
+Actualizar Dependencias
+-----------------------
+  npm update
+
+Actualizar Mayor Versión
+------------------------
+Revisar changelog y actualizar manualmente en package.json:
+  npm install react@latest react-dom@latest
+
+Verificar que Todo Funciona
+----------------------------
+1. npm run dev
+2. Probar funcionalidades principales
+3. Verificar que no hay errores de consola
+4. Verificar que build funciona: npm run build
+
+12.4. REFACTORIZACIÓN
+---------------------
+
+Cuándo Refactorizar
+-------------------
+- Código duplicado
+- Componentes muy grandes (>300 líneas)
+- Lógica compleja que se puede simplificar
+- Mejoras de performance necesarias
+
+Cómo Refactorizar
+-----------------
+1. Identificar código a refactorizar
+2. Crear branch para refactorización
+3. Hacer cambios incrementales
+4. Probar después de cada cambio
+5. Merge cuando esté completo
+
+12.5. MANTENIMIENTO REGULAR
+----------------------------
+
+Tareas Semanales
+-----------------
+- Revisar logs de errores
+- Verificar que dependencias están actualizadas
+- Revisar código para mejoras
+
+Tareas Mensuales
+----------------
+- Actualizar dependencias menores
+- Revisar y limpiar código no usado
+- Optimizar performance si es necesario
+- Revisar documentación
+
+Tareas Trimestrales
+-------------------
+- Actualizar dependencias mayores (con cuidado)
+- Revisar arquitectura general
+- Planificar mejoras importantes
+- Actualizar este manual si hay cambios significativos
+
+================================================================================
+13. REFERENCIAS TÉCNICAS
+================================================================================
+
+13.1. DOCUMENTACIÓN OFICIAL
+----------------------------
+
+React
+-----
+- Documentación: https://react.dev/
+- Hooks: https://react.dev/reference/react
+- Guías: https://react.dev/learn
+
+Vite
+----
+- Documentación: https://vitejs.dev/
+- Guía de configuración: https://vitejs.dev/config/
+- Plugins: https://vitejs.dev/plugins/
+
+Tailwind CSS
+------------
+- Documentación: https://tailwindcss.com/docs
+- Utilidades: https://tailwindcss.com/docs/utility-first
+- Configuración: https://tailwindcss.com/docs/configuration
+
+React Router
+------------
+- Documentación: https://reactrouter.com/
+- Guías: https://reactrouter.com/en/main/start/overview
+
+Axios
+-----
+- Documentación: https://axios-http.com/docs/intro
+- Interceptores: https://axios-http.com/docs/interceptors
+
+13.2. RECURSOS ADICIONALES
+---------------------------
+
+React Patterns
+--------------
+- https://reactpatterns.com/
+- https://kentcdodds.com/blog
+
+Tailwind UI
+-----------
+- Componentes: https://tailwindui.com/
+- Ejemplos: https://tailwindui.com/components
+
+Stack Overflow
+--------------
+- Etiquetas: reactjs, vite, tailwindcss
+- Preguntas frecuentes sobre estas tecnologías
+
+13.3. HERRAMIENTAS ÚTILES
+--------------------------
+
+CodeSandbox
+-----------
+- Para prototipos rápidos: https://codesandbox.io/
+- Templates de React + Vite disponibles
+
+Can I Use
+---------
+- Compatibilidad de navegadores: https://caniuse.com/
+
+Bundle Analyzer
+---------------
+- Analizar tamaño del bundle (futuro)
+- webpack-bundle-analyzer o rollup-plugin-visualizer
+
+13.4. COMUNIDAD
+---------------
+
+React Community
+---------------
+- Reddit: r/reactjs
+- Discord: Reactiflux
+- Twitter: @reactjs
+
+Stack Overflow
+--------------
+- Tag: reactjs
+- Preguntas y respuestas de la comunidad
+
+GitHub
+------
+- Issues y PRs de proyectos open source
+- Código de referencia
+
+================================================================================
+14. GLOSARIO TÉCNICO
+================================================================================
+
+SPA (Single Page Application)
+------------------------------
+Aplicación web que carga una sola página HTML y actualiza el contenido
+dinámicamente sin recargar la página completa.
+
+Component
+---------
+Unidad reutilizable de UI en React. Puede ser una función o clase que retorna
+JSX.
+
+Hook
+----
+Función especial de React que permite "engancharse" a características de React
+como estado y ciclo de vida. Empiezan con "use" (useState, useEffect, etc.).
+
+JSX
+---
+Sintaxis que permite escribir HTML-like en JavaScript. React lo transforma en
+llamadas a React.createElement().
+
+Props
+-----
+Propiedades pasadas a un componente React. Son inmutables y fluyen de padre a
+hijo.
+
+State
+-----
+Datos que pueden cambiar durante el ciclo de vida de un componente. Se maneja
+con useState hook.
+
+Effect
+------
+Operación secundaria que se ejecuta después del render. Se maneja con useEffect
+hook.
+
+Virtual DOM
+-----------
+Representación en memoria del DOM real. React la usa para optimizar actualizaciones.
+
+Re-render
+---------
+Proceso de React de actualizar el DOM cuando cambian props o state.
+
+Bundle
+------
+Archivo(s) JavaScript compilados y optimizados que contienen todo el código de
+la aplicación.
+
+Tree Shaking
+------------
+Proceso de eliminar código no usado del bundle final.
+
+Hot Module Replacement (HMR)
+----------------------------
+Tecnología que permite actualizar módulos en tiempo de ejecución sin recargar
+toda la página.
+
+JWT (JSON Web Token)
+--------------------
+Estándar para tokens de autenticación. Contiene información codificada sobre
+el usuario.
+
+CORS (Cross-Origin Resource Sharing)
+-------------------------------------
+Mecanismo que permite que un servidor permita peticiones desde otros orígenes
+(dominios, puertos, protocolos).
+
+REST API
+--------
+Arquitectura de API que usa métodos HTTP estándar (GET, POST, PUT, DELETE) para
+operaciones CRUD.
+
+CRUD
+----
+Create, Read, Update, Delete - operaciones básicas de persistencia de datos.
+
+Interceptor
+-----------
+Función que se ejecuta antes o después de una petición HTTP. Se usa para
+agregar headers, manejar errores, etc.
+
+Environment Variable
+--------------------
+Variable de configuración que cambia según el entorno (desarrollo, producción).
+
+Build
+-----
+Proceso de compilar y optimizar código fuente para producción.
+
+Dev Server
+----------
+Servidor de desarrollo que sirve la aplicación durante el desarrollo, con
+características como HMR.
+
+Linting
+-------
+Proceso de analizar código para encontrar errores, bugs y problemas de estilo.
+
+================================================================================
+15. APÉNDICES
+================================================================================
+
+15.1. ESTRUCTURA COMPLETA DE ARCHIVOS
+--------------------------------------
+
+torneos/
+├── .gitignore
+├── .env                    # Variables de entorno (no versionar)
+├── .env.production         # Variables de producción (no versionar)
+├── eslint.config.js
+├── index.html
+├── package.json
+├── package-lock.json
+├── vite.config.js
+├── README.md
+├── DOCUMENTACION_SCRUM.txt
+├── MANUAL_TECNICO.txt      # Este archivo
+├── DIAGRAMA_BASE_DATOS.md
+├── DIAGRAMA_VISUAL.txt
+├── public/
+│   ├── manifest.json
+│   ├── sw.js
+│   ├── torneos.png
+│   └── vite.svg
+└── src/
+    ├── assets/
+    │   └── torneos.png
+    ├── components/
+    │   ├── Header.jsx
+    │   ├── Layout.jsx
+    │   ├── ProtectedRoute.jsx
+    │   └── Sidebar.jsx
+    ├── page/
+    │   ├── Dashboard.jsx
+    │   ├── Login.jsx
+    │   ├── Torneos.jsx
+    │   ├── TorneoDetalle.jsx
+    │   ├── Inscripciones.jsx
+    │   ├── Tiempos.jsx
+    │   └── Resultados.jsx
+    ├── services/
+    │   ├── api.js
+    │   ├── authService.js
+    │   ├── torneoService.js
+    │   ├── atletaService.js
+    │   ├── tiempoService.js
+    │   └── resultadoService.js
+    ├── index.css
+    └── main.jsx
+
+15.2. COMANDOS ÚTILES
+---------------------
+
+Desarrollo
+----------
+  npm run dev              # Inicia servidor de desarrollo
+  npm run build            # Crea build de producción
+  npm run preview          # Previsualiza build
+  npm run lint             # Ejecuta ESLint
+
+Instalación
+-----------
+  npm install              # Instala dependencias
+  npm install <paquete>     # Instala paquete específico
+  npm uninstall <paquete>   # Desinstala paquete
+
+Información
+-----------
+  npm list                 # Lista dependencias instaladas
+  npm outdated             # Muestra paquetes desactualizados
+  npm info <paquete>       # Información de un paquete
+
+Git
+---
+  git status               # Estado del repositorio
+  git add .                # Agrega todos los cambios
+  git commit -m "mensaje"  # Hace commit
+  git push                 # Sube cambios al remoto
+  git pull                 # Descarga cambios del remoto
+
+15.3. CHECKLIST DE DESARROLLO
+------------------------------
+
+Antes de Empezar
+----------------
+□ Clonar/descargar proyecto
+□ Instalar dependencias (npm install)
+□ Configurar variables de entorno (.env)
+□ Verificar que npm run dev funciona
+
+Al Agregar Nueva Funcionalidad
+-------------------------------
+□ Crear servicio si es necesario
+□ Crear componente/página
+□ Agregar ruta si es necesario
+□ Probar funcionalidad
+□ Verificar responsive
+□ Verificar manejo de errores
+□ Verificar que no hay errores de linting
+
+Antes de Commit
+----------------
+□ Ejecutar npm run lint
+□ Verificar que no hay errores de consola
+□ Verificar que build funciona (npm run build)
+□ Probar funcionalidades principales
+□ Actualizar documentación si es necesario
+
+Antes de Deploy
+---------------
+□ Verificar variables de entorno de producción
+□ Ejecutar npm run build
+□ Probar build localmente (npm run preview)
+□ Verificar que todas las rutas funcionan
+□ Verificar que autenticación funciona
+□ Verificar responsive en diferentes dispositivos
+
+15.4. TEMPLATE DE SERVICIO
+---------------------------
+
+// src/services/ejemploService.js
+import api from './api';
+
+export const ejemploService = {
+  // Obtener todos
+  getAll: async () => {
+    const response = await api.get('/ejemplos');
+    return response.data;
+  },
+
+  // Obtener por ID
+  getById: async (id) => {
+    const response = await api.get(`/ejemplos/${id}`);
+    return response.data;
+  },
+
+  // Crear nuevo
+  create: async (data) => {
+    const response = await api.post('/ejemplos', data);
+    return response.data;
+  },
+
+  // Actualizar
+  update: async (id, data) => {
+    const response = await api.put(`/ejemplos/${id}`, data);
+    return response.data;
+  },
+
+  // Eliminar
+  delete: async (id) => {
+    const response = await api.delete(`/ejemplos/${id}`);
+    return response.data;
+  },
+};
+
+15.5. TEMPLATE DE COMPONENTE
+-----------------------------
+
+// src/components/Ejemplo.jsx
+import { useState, useEffect } from 'react';
+import { ejemploService } from '../services/ejemploService';
+import { Loader2 } from 'lucide-react';
+
+function Ejemplo() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await ejemploService.getAll();
+      setData(response.data);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        Error: {error}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1 className="text-3xl font-bold text-primary mb-6">Ejemplo</h1>
+      {/* Contenido del componente */}
+    </div>
+  );
+}
+
+export default Ejemplo;
+
+================================================================================
+                            FIN DEL MANUAL TÉCNICO
+================================================================================
+
+Este manual técnico proporciona una guía completa para desarrolladores que
+trabajarán con el Sistema de Gestión de Torneos. Se actualiza según evoluciona
+el proyecto.
+
+Para preguntas o sugerencias sobre este manual, contactar al equipo de desarrollo.
+
+Última actualización: 2024
+Versión del manual: 1.0
+

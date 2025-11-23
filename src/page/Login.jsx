@@ -3,37 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      // hacer que siempre  pase la valicacion de que el usuario y contraseña son correctos por ahora
-      //const response = await authService.login(formData);
-      const response = {
-        data: {
-          token: '1234567890',
-          user: {
-            id: 1,
-            name: 'Admin',
-          },
-        },
-      };
+      const response = await authService.login(formData);
       authService.setAuth(response.data.token, response.data.user);
-      navigate('/dashboard');
-      return;
+      // Redirigir al dashboard después del login exitoso
+      navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError('Credenciales inválidas. Por favor, intenta nuevamente.');
-      console.error('Error en login:', err);
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Credenciales inválidas. Por favor, intenta nuevamente.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
