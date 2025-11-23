@@ -133,7 +133,6 @@ export const deleteTorneo = async (req, res, next) => {
 // @access  Private
 export const getCategorias = async (req, res, next) => {
   try {
-    console.log("req.params.id", req.params.id);
     // convertir req.params.id a ObjectId
     const torneoId = new mongoose.Types.ObjectId(req.params.id);
     const categorias = await Categoria.find({ torneo_id: torneoId });
